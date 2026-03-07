@@ -9,6 +9,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
   const [submittingIds, setSubmittingIds] = useState(new Set());
   const [localErrors, setLocalErrors] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const itemsPerPage = 10;
 
   // Reset to first page when products array length changes significantly
@@ -41,8 +42,10 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
       addToast(`Se ${actionText} ${Math.abs(amount)} ${updatedProduct.unidad_medida.toLowerCase()} de ${updatedProduct.nombre}.`, 'success');
       
       // Notify if remaining stock is extremely low
-      if (updatedProduct.cantidad <= 5) {
-        addToast(`⚠️ ALERTA: Quedan solo ${updatedProduct.cantidad} ${updatedProduct.unidad_medida.toLowerCase()} de ${updatedProduct.nombre}.`, 'error');
+      if (updatedProduct.cantidad <= 5 && updatedProduct.cantidad > 0) {
+        addToast(`ALERTA: Quedan solo ${updatedProduct.cantidad} ${updatedProduct.unidad_medida.toLowerCase()} de ${updatedProduct.nombre}.`, 'error');
+      } else if (updatedProduct.cantidad === 0) {
+        addToast(`ALERTA: No hay Stock del producto ${updatedProduct.nombre}.`, 'error');
       }
 
       if (onStockUpdated) {
@@ -67,13 +70,46 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
     return <div className="alert error">Error al cargar el inventario: {error}</div>;
   }
 
+  // Sorting logic
+  let sortedProducts = [...products];
+  if (sortConfig.key) {
+    sortedProducts.sort((a, b) => {
+      let aVal = a[sortConfig.key];
+      let bVal = b[sortConfig.key];
+      
+      if (typeof aVal === 'string') {
+        aVal = aVal.toLowerCase();
+        bVal = bVal.toLowerCase();
+      }
+      
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
   // Pagination logic
   const totalPages = Math.ceil(products.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
+  const currentProducts = sortedProducts.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const requestSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIcon = (columnName) => {
+    if (sortConfig.key !== columnName) {
+      return <span className="sort-icon inactive">↕</span>;
+    }
+    return sortConfig.direction === 'asc' ? <span className="sort-icon">↑</span> : <span className="sort-icon">↓</span>;
+  };
 
   return (
     <div className="card inventory-card">
@@ -83,11 +119,21 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
         <table className="inventory-table">
           <thead>
             <tr>
-              <th>ID (SKU)</th>
-              <th>Nombre</th>
-              <th>Categoría</th>
-              <th>U. Medida</th>
-              <th>Stock Actual</th>
+              <th onClick={() => requestSort('id')} className="sortable-header">
+                ID (SKU) {getSortIcon('id')}
+              </th>
+              <th onClick={() => requestSort('nombre')} className="sortable-header">
+                Nombre {getSortIcon('nombre')}
+              </th>
+              <th onClick={() => requestSort('categoria')} className="sortable-header">
+                Categoría {getSortIcon('categoria')}
+              </th>
+              <th onClick={() => requestSort('unidad_medida')} className="sortable-header">
+                U. Medida {getSortIcon('unidad_medida')}
+              </th>
+              <th onClick={() => requestSort('cantidad')} className="sortable-header">
+                Stock Actual {getSortIcon('cantidad')}
+              </th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -105,7 +151,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
                   <td>{product.unidad_medida}</td>
                   <td>
                     <span className={`stock-badge ${product.cantidad > 10 ? 'stock-ok' : product.cantidad > 0 ? 'stock-low' : 'stock-out'}`}>
-                      {product.cantidad}
+                      {product.cantidad === 0 ? `No hay Stock del producto ${product.nombre}` : product.cantidad}
                     </span>
                   </td>
                   <td className="actions-cell">

@@ -219,3 +219,32 @@
   border-color: rgba(59, 130, 246, 0.2);
   font-weight: 600;
 }
+
+/* Sorting Styles */
+.sortable-header {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s;
+}
+
+.sortable-header:hover {
+  background-color: var(--border-color);
+}
+
+.sort-icon {
+  display: inline-block;
+  margin-left: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--primary);
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.sort-icon.inactive {
+  color: var(--muted-text);
+  opacity: 0.3;
+}
+
+.sortable-header:hover .sort-icon.inactive {
+  opacity: 0.8;
+}
