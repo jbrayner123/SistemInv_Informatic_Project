@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
-app = FastAPI(title="Hardware Store Inventory API")
+app = FastAPI(title="SistemInv API")
 
 # --------- CORS Configuration ---------
 app.add_middleware(
@@ -54,8 +54,8 @@ class Product(BaseModel):
     unidad_medida: str
     cantidad: int = Field(ge=0, description="La cantidad de stock no puede ser negativa")
 
-class AddStockRequest(BaseModel):
-    cantidad: int = Field(gt=0, description="La cantidad a sumar debe ser positiva")
+class UpdateStockRequest(BaseModel):
+    cantidad: int = Field(description="La cantidad a sumar o restar (puede ser negativa)")
 
 # --------- Endpoints ---------
 
@@ -88,14 +88,18 @@ def create_product(product: Product):
     
     return product
 
-@app.put("/products/{product_id}/add_stock", response_model=Product)
-def add_product_stock(product_id: str, request: AddStockRequest):
-    """HU-09: Register product entry (Add stock to existing product)."""
+@app.put("/products/{product_id}/update_stock", response_model=Product)
+def update_product_stock(product_id: str, request: UpdateStockRequest):
+    """Actualiza (suma o resta) el stock del producto."""
     data = read_db()
     
     for p in data:
         if p["id"] == product_id:
-            p["cantidad"] += request.cantidad
+            new_stock = p["cantidad"] + request.cantidad
+            if new_stock < 0:
+                raise HTTPException(status_code=400, detail="El stock no puede ser menor a 0.")
+            
+            p["cantidad"] = new_stock
             write_db(data)
             return p
             

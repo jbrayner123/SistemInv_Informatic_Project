@@ -32,9 +32,9 @@ export const api = {
     }
   },
 
-  addStock: async (productId, amount) => {
+  updateStock: async (productId, amount) => {
     try {
-      const response = await fetch(`${API_URL}/products/${productId}/add_stock`, {
+      const response = await fetch(`${API_URL}/products/${productId}/update_stock`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cantidad: amount }),
@@ -45,8 +45,8 @@ export const api = {
       }
       return await response.json();
     } catch (error) {
-      console.error('addStock falló:', error);
-      throw new Error(error.message || 'Error al sumar stock.');
+      console.error('updateStock falló:', error);
+      throw new Error(error.message || 'Error al actualizar el stock.');
     }
   }
 };

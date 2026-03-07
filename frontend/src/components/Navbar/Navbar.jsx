@@ -6,14 +6,14 @@ const Navbar = ({ toggleDarkMode, isDarkMode }) => {
     <nav className="navbar">
       <div className="navbar-container">
         <div className="navbar-logo">
-          <h2>Sisteminv</h2>
+          <h2>SistemInv</h2>
         </div>
         <button 
           className="theme-toggle" 
           onClick={toggleDarkMode}
           aria-label="Toggle Dark Mode"
         >
-          {isDarkMode ? '☀️ Claro' : '🌙 Oscuro'}
+          {isDarkMode ? 'Modo Claro' : 'Modo Oscuro'}
         </button>
       </div>
     </nav>

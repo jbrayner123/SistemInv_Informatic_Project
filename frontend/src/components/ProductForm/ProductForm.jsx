@@ -52,7 +52,7 @@ const ProductForm = ({ onProductAdded }) => {
 
   return (
     <div className="card product-form-card">
-      <h3>➕ Registrar Producto</h3>
+      <h3>Registrar Producto</h3>
       
       {error && <div className="alert error">{error}</div>}
 

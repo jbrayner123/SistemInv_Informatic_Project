@@ -1,29 +1,40 @@
 import React, { useState } from 'react';
 import { api } from '../../api/api';
+import { useToast } from '../Toast/ToastContext';
 import './InventoryTable.css';
 
 const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
-  const [stockAddAmount, setStockAddAmount] = useState({});
+  const { addToast } = useToast();
+  const [stockUpdateAmount, setStockUpdateAmount] = useState({});
   const [submittingIds, setSubmittingIds] = useState(new Set());
   const [localErrors, setLocalErrors] = useState({});
 
   const handleStockChange = (id, value) => {
-    setStockAddAmount(prev => ({
+    setStockUpdateAmount(prev => ({
       ...prev,
-      [id]: parseInt(value) || ''
+      [id]: value === '' ? '' : parseInt(value)
     }));
   };
 
-  const handleAddStock = async (id) => {
-    const amount = stockAddAmount[id];
-    if (!amount || amount <= 0) return;
+  const handleUpdateStock = async (id) => {
+    const amount = stockUpdateAmount[id];
+    if (amount === undefined || amount === '' || amount === 0 || isNaN(amount)) return;
 
     setSubmittingIds(prev => new Set(prev).add(id));
     setLocalErrors(prev => ({ ...prev, [id]: null }));
 
     try {
-      await api.addStock(id, amount);
-      setStockAddAmount(prev => ({ ...prev, [id]: '' }));
+      const updatedProduct = await api.updateStock(id, amount);
+      setStockUpdateAmount(prev => ({ ...prev, [id]: '' }));
+      
+      const actionText = amount > 0 ? 'añadieron' : 'restaron';
+      addToast(`Se ${actionText} ${Math.abs(amount)} unidades de ${updatedProduct.nombre}.`, 'success');
+      
+      // Notify if remaining stock is extremely low
+      if (updatedProduct.cantidad <= 5) {
+        addToast(`⚠️ ALERTA: Quedan solo ${updatedProduct.cantidad} unidades de ${updatedProduct.nombre}.`, 'error');
+      }
+
       if (onStockUpdated) {
         onStockUpdated();
       }
@@ -48,7 +59,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
 
   return (
     <div className="card inventory-card">
-      <h3>📊 Inventario Actual ({products.length})</h3>
+      <h3>Inventario Actual ({products.length})</h3>
       
       <div className="table-container">
         <table className="inventory-table">
@@ -83,20 +94,19 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
                     <div className="add-stock-wrapper">
                       <input 
                         type="number" 
-                        min="1"
-                        placeholder="+0" 
-                        value={stockAddAmount[product.id] || ''}
+                        placeholder="+/-" 
+                        value={stockUpdateAmount[product.id] !== undefined ? stockUpdateAmount[product.id] : ''}
                         onChange={(e) => handleStockChange(product.id, e.target.value)}
                         disabled={submittingIds.has(product.id)}
                         className="stock-input"
                       />
                       <button 
                         className="btn-success"
-                        onClick={() => handleAddStock(product.id)}
-                        disabled={submittingIds.has(product.id) || !stockAddAmount[product.id]}
-                        title="Sumar Stock"
+                        onClick={() => handleUpdateStock(product.id)}
+                        disabled={submittingIds.has(product.id) || !stockUpdateAmount[product.id] || stockUpdateAmount[product.id] === 0}
+                        title="Actualizar Stock"
                       >
-                        {submittingIds.has(product.id) ? '...' : '+'}
+                        {submittingIds.has(product.id) ? '...' : '✓'}
                       </button>
                     </div>
                     {localErrors[product.id] && (

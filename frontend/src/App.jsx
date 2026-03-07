@@ -47,8 +47,9 @@ function App() {
         
         <main className="main-content">
           <header className="page-header">
-            <h1>Sisteminv Dashboard</h1>
-          </header>
+          <h1>SistemInv - Resumen del Inventario</h1>
+          <p>Gestiona los productos y el stock de tu ferretería en tiempo real.</p>
+        </header>
 
           <div className="dashboard-grid">
             <section className="form-section">
