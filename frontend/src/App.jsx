@@ -1,67 +1,73 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import Navbar from './components/Navbar/Navbar';
+import ProductForm from './components/ProductForm/ProductForm';
+import InventoryTable from './components/InventoryTable/InventoryTable';
+import { ToastProvider } from './components/Toast/ToastContext';
+import { api } from './api/api';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-  const [backendMessage, setBackendMessage] = useState('')
-  const [backendStatus, setBackendStatus] = useState('')
+  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Conectar con FastAPI backend
-    axios.get('http://localhost:8000/')
-      .then(response => {
-        setBackendMessage(response.data.message)
-      })
-      .catch(error => {
-        console.error('Error conectando al backend:', error)
-        setBackendMessage('Error de conexión')
-      })
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.removeAttribute('data-theme');
+    }
+  }, [isDarkMode]);
 
-    axios.get('http://localhost:8000/api/health')
-      .then(response => {
-        setBackendStatus(response.data.status)
-      })
-      .catch(error => {
-        console.error('Error en health check:', error)
-        setBackendStatus('offline')
-      })
-  }, [])
+  const toggleDarkMode = () => setIsDarkMode(!isDarkMode);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await api.getProducts();
+      setProducts(data);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <ToastProvider>
+      <div className="app-wrapper">
+        <Navbar toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
+        
+        <main className="main-content">
+          <header className="page-header">
+            <h1>Sisteminv Dashboard</h1>
+          </header>
+
+          <div className="dashboard-grid">
+            <section className="form-section">
+              <ProductForm onProductAdded={fetchProducts} />
+            </section>
+            
+            <section className="table-section">
+              <InventoryTable 
+                products={products} 
+                onStockUpdated={fetchProducts}
+                loading={loading}
+                error={error}
+              />
+            </section>
+          </div>
+        </main>
       </div>
-      <h1>Vite + React + FastAPI</h1>
-      
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      
-      <div className="card" style={{ marginTop: '2rem', background: '#f0f0f0', padding: '1rem', borderRadius: '8px' }}>
-        <h3>Backend Status</h3>
-        <p><strong>Mensaje:</strong> {backendMessage}</p>
-        <p><strong>Estado:</strong> {backendStatus}</p>
-      </div>
-      
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </ToastProvider>
+  );
 }
 
-export default App
+export default App;

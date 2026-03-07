@@ -1,0 +1,30 @@
+[
+    {
+        "id": "Her-123",
+        "nombre": "bombillo",
+        "categoria": "Materiales",
+        "unidad_medida": "Unidad",
+        "cantidad": 12
+    },
+    {
+        "id": "Her 1000",
+        "nombre": "Lapiz",
+        "categoria": "Otros",
+        "unidad_medida": "Unidad",
+        "cantidad": 50
+    },
+    {
+        "id": "Her 10",
+        "nombre": "Gomas",
+        "categoria": "Fijación",
+        "unidad_medida": "Metro",
+        "cantidad": 2
+    },
+    {
+        "id": "Her 10002",
+        "nombre": "Martillo",
+        "categoria": "Herramientas",
+        "unidad_medida": "Unidad",
+        "cantidad": 10
+    }
+]

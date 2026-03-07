@@ -1,0 +1,158 @@
+.inventory-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.inventory-card h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: var(--primary);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.inventory-table th,
+.inventory-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.inventory-table th {
+  background-color: var(--table-header);
+  font-weight: 600;
+  color: var(--text-color);
+  white-space: nowrap;
+}
+
+.inventory-table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.inventory-table tbody tr:hover {
+  background-color: var(--table-row-hover);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem !important;
+  color: var(--muted-text);
+  font-style: italic;
+}
+
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.category-badge {
+  background-color: rgba(59, 130, 246, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.stock-badge {
+  display: inline-block;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.stock-ok {
+  background-color: rgba(16, 185, 129, 0.1);
+  color: var(--success);
+}
+
+.stock-low {
+  background-color: rgba(245, 158, 11, 0.1);
+  color: #d97706;
+}
+
+.stock-out {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--danger);
+}
+
+.actions-cell {
+  position: relative;
+  min-width: 150px;
+}
+
+.add-stock-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stock-input {
+  width: 70px;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--input-bg);
+  color: var(--text-color);
+}
+
+.btn-success {
+  background-color: var(--success);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-success:hover:not(:disabled) {
+  background-color: var(--success-hover);
+}
+
+.btn-success:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.local-error {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  font-size: 0.75rem;
+  color: var(--danger);
+  margin-top: 0.25rem;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 2rem;
+  color: var(--muted-text);
+  font-weight: 500;
+}
