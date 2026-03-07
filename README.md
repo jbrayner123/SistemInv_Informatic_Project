@@ -31,20 +31,31 @@ TECNOLOGIAS UTILIZADAS
 INSTALACION Y CONFIGURACION
 
 1. BACKEND (FastAPI - Consola 1)
-Requiere tener instalado Python 3 y pip. Por defecto, está adaptado para sistemas Linux/CachyOS (Fish o Bash).
+Requiere tener instalado Python 3 y pip. Funciona en Windows, Mac y Linux.
 
 - Abre tu terminal y ubícate en la carpeta del proyecto:
-  cd /ruta/hacia/backend
+  cd \ruta\hacia\backend (En Windows)
+  cd /ruta/hacia/backend (En Mac/Linux)
 
-- Crea y activa un entorno virtual (Si usas Fish Shell en CachyOS):
+- Crea el entorno virtual:
   python -m venv venv
-  source venv/bin/activate.fish
+
+- Activa el entorno virtual según tu sistema operativo:
+  En Windows (PowerShell):
+    .\venv\Scripts\Activate.ps1
+  En Windows (CMD clásico):
+    .\venv\Scripts\activate.bat
+  En Linux/Mac (Bash o Fish):
+    source venv/bin/activate (o activate.fish)
 
 - Instala las dependencias necesarias:
   pip install fastapi "uvicorn[standard]" pydantic
 
 - Ejecuta el servidor del Backend:
-  ./venv/bin/uvicorn main:app --reload
+  En Windows:
+    .\venv\Scripts\uvicorn main:app --reload
+  En Linux/Mac:
+    ./venv/bin/uvicorn main:app --reload
 
 (El servidor quedará corriendo en http://127.0.0.1:8000 y creará su archivo database.json de forma autónoma).
 
