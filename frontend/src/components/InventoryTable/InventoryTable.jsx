@@ -28,11 +28,11 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
       setStockUpdateAmount(prev => ({ ...prev, [id]: '' }));
       
       const actionText = amount > 0 ? 'añadieron' : 'restaron';
-      addToast(`Se ${actionText} ${Math.abs(amount)} unidades de ${updatedProduct.nombre}.`, 'success');
+      addToast(`Se ${actionText} ${Math.abs(amount)} ${updatedProduct.unidad_medida.toLowerCase()} de ${updatedProduct.nombre}.`, 'success');
       
       // Notify if remaining stock is extremely low
       if (updatedProduct.cantidad <= 5) {
-        addToast(`⚠️ ALERTA: Quedan solo ${updatedProduct.cantidad} unidades de ${updatedProduct.nombre}.`, 'error');
+        addToast(`⚠️ ALERTA: Quedan solo ${updatedProduct.cantidad} ${updatedProduct.unidad_medida.toLowerCase()} de ${updatedProduct.nombre}.`, 'error');
       }
 
       if (onStockUpdated) {

@@ -25,7 +25,7 @@
         "nombre": "Arena Fina",
         "categoria": "Materiales",
         "unidad_medida": "Kg",
-        "cantidad": 1500
+        "cantidad": 1477
     },
     {
         "id": "FIJ-001",
@@ -46,13 +46,13 @@
         "nombre": "Pintura Látex Blanca",
         "categoria": "Pinturas",
         "unidad_medida": "Litro",
-        "cantidad": 0
+        "cantidad": 2
     },
     {
         "id": "PIN-002",
         "nombre": "Thinner Extra Fino",
         "categoria": "Pinturas",
         "unidad_medida": "Litro",
-        "cantidad": 3
+        "cantidad": 0
     }
 ]
