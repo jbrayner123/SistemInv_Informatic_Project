@@ -1,58 +1,107 @@
 [
-    {
-        "id": "HER-001",
-        "nombre": "Martillo de Uña 16oz",
-        "categoria": "Herramientas",
-        "unidad_medida": "Unidad",
-        "cantidad": 12
-    },
-    {
-        "id": "HER-002",
-        "nombre": "Destornillador Phillips",
-        "categoria": "Herramientas",
-        "unidad_medida": "Unidad",
-        "cantidad": 7
-    },
-    {
-        "id": "MAT-001",
-        "nombre": "Cemento Gris Portland",
-        "categoria": "Materiales",
-        "unidad_medida": "Kg",
-        "cantidad": 500
-    },
-    {
-        "id": "MAT-002",
-        "nombre": "Arena Fina",
-        "categoria": "Materiales",
-        "unidad_medida": "Kg",
-        "cantidad": 1477
-    },
-    {
-        "id": "FIJ-001",
-        "nombre": "Clavos de Acero 2\"",
-        "categoria": "Fijación",
-        "unidad_medida": "Kg",
-        "cantidad": 25
-    },
-    {
-        "id": "FIJ-002",
-        "nombre": "Tornillos para Madera 1.5\"",
-        "categoria": "Fijación",
-        "unidad_medida": "Unidad",
-        "cantidad": 199
-    },
-    {
-        "id": "PIN-001",
-        "nombre": "Pintura Látex Blanca",
-        "categoria": "Pinturas",
-        "unidad_medida": "Litro",
-        "cantidad": 2
-    },
-    {
-        "id": "PIN-002",
-        "nombre": "Thinner Extra Fino",
-        "categoria": "Pinturas",
-        "unidad_medida": "Litro",
-        "cantidad": 0
-    }
+  {
+    "id": "HER-001",
+    "nombre": "Martillo de Galponero",
+    "categoria": "Herramientas",
+    "unidad_medida": "Unidad",
+    "cantidad": 12
+  },
+  {
+    "id": "HER-002",
+    "nombre": "Destornillador Phillips",
+    "categoria": "Herramientas",
+    "unidad_medida": "Unidad",
+    "cantidad": 45
+  },
+  {
+    "id": "MAT-001",
+    "nombre": "Cemento Portland",
+    "categoria": "Materiales",
+    "unidad_medida": "Kg",
+    "cantidad": 200
+  },
+  {
+    "id": "MAT-002",
+    "nombre": "Arena Fina",
+    "categoria": "Materiales",
+    "unidad_medida": "Kg",
+    "cantidad": 500
+  },
+  {
+    "id": "FIJ-001",
+    "nombre": "Clavos 2 pulgadas",
+    "categoria": "Fijación",
+    "unidad_medida": "Kg",
+    "cantidad": 50
+  },
+  {
+    "id": "FIJ-002",
+    "nombre": "Tornillo Autoperforante",
+    "categoria": "Fijación",
+    "unidad_medida": "Unidad",
+    "cantidad": 300
+  },
+  {
+    "id": "PIN-001",
+    "nombre": "Pintura Latex Blanca",
+    "categoria": "Pinturas",
+    "unidad_medida": "Litro",
+    "cantidad": 100
+  },
+  {
+    "id": "PIN-002",
+    "nombre": "Aguarras Mineral",
+    "categoria": "Pinturas",
+    "unidad_medida": "Litro",
+    "cantidad": 25
+  },
+  {
+    "id": "OTR-001",
+    "nombre": "Cinta Metrica 5m",
+    "categoria": "Herramientas",
+    "unidad_medida": "Unidad",
+    "cantidad": 15
+  },
+  {
+    "id": "OTR-002",
+    "nombre": "Guantes de Cuero",
+    "categoria": "Otros",
+    "unidad_medida": "Unidad",
+    "cantidad": 30
+  },
+  {
+    "id": "HER-003",
+    "nombre": "Taladro Percutor",
+    "categoria": "Herramientas",
+    "unidad_medida": "Unidad",
+    "cantidad": 5
+  },
+  {
+    "id": "MAT-003",
+    "nombre": "Hierro del 8",
+    "categoria": "Materiales",
+    "unidad_medida": "Metro",
+    "cantidad": 120
+  },
+  {
+    "id": "FIJ-003",
+    "nombre": "Tarugo N8",
+    "categoria": "Fijación",
+    "unidad_medida": "Unidad",
+    "cantidad": 500
+  },
+  {
+    "id": "PIN-003",
+    "nombre": "Pincel N20",
+    "categoria": "Pinturas",
+    "unidad_medida": "Unidad",
+    "cantidad": 40
+  },
+  {
+    "id": "OTR-003",
+    "nombre": "Candado 40mm",
+    "categoria": "Otros",
+    "unidad_medida": "Unidad",
+    "cantidad": 18
+  }
 ]

@@ -8,6 +8,16 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
   const [stockUpdateAmount, setStockUpdateAmount] = useState({});
   const [submittingIds, setSubmittingIds] = useState(new Set());
   const [localErrors, setLocalErrors] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  // Reset to first page when products array length changes significantly
+  React.useEffect(() => {
+    const totalPages = Math.ceil(products.length / itemsPerPage);
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [products.length, currentPage]);
 
   const handleStockChange = (id, value) => {
     setStockUpdateAmount(prev => ({
@@ -57,6 +67,14 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
     return <div className="alert error">Error al cargar el inventario: {error}</div>;
   }
 
+  // Pagination logic
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="card inventory-card">
       <h3>Inventario Actual ({products.length})</h3>
@@ -79,7 +97,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
                 <td colSpan="6" className="empty-state">No hay productos registrados.</td>
               </tr>
             ) : (
-              products.map((product) => (
+              currentProducts.map((product) => (
                 <tr key={product.id}>
                   <td className="font-mono">{product.id}</td>
                   <td className="font-semibold">{product.nombre}</td>
@@ -119,6 +137,38 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button 
+            onClick={() => paginate(currentPage - 1)} 
+            disabled={currentPage === 1}
+            className="btn-pagination"
+          >
+            Anterior
+          </button>
+          
+          <div className="page-numbers">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+              <button
+                key={number}
+                onClick={() => paginate(number)}
+                className={`btn-page ${currentPage === number ? 'active' : ''}`}
+              >
+                {number}
+              </button>
+            ))}
+          </div>
+
+          <button 
+            onClick={() => paginate(currentPage + 1)} 
+            disabled={currentPage === totalPages}
+            className="btn-pagination"
+          >
+            Siguiente
+          </button>
+        </div>
+      )}
     </div>
   );
 };
