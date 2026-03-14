@@ -53,6 +53,13 @@ class Product(BaseModel):
     categoria: str
     unidad_medida: str
     cantidad: int = Field(ge=0, description="La cantidad de stock no puede ser negativa")
+    stock_minimo: int = Field(default=5, ge=0, description="Umbral para alerta de bajo inventario")
+
+class ProductUpdate(BaseModel):
+    nombre: str
+    categoria: str
+    unidad_medida: str
+    stock_minimo: int = Field(default=5, ge=0)
 
 class UpdateStockRequest(BaseModel):
     cantidad: int = Field(description="La cantidad a sumar o restar (puede ser negativa)")
@@ -72,7 +79,18 @@ def favicon():
 @app.get("/products", response_model=List[Product])
 def list_products():
     """HU-12: List all products in the inventory."""
-    return read_db()
+    data = read_db()
+    # Retrocompatibility: Inject stock_minimo if it doesn't exist in older records
+    updated = False
+    for p in data:
+        if "stock_minimo" not in p:
+            p["stock_minimo"] = 5
+            updated = True
+            
+    if updated:
+        write_db(data)
+        
+    return data
 
 @app.post("/products", response_model=Product, status_code=201)
 def create_product(product: Product):
@@ -103,6 +121,31 @@ def update_product_stock(product_id: str, request: UpdateStockRequest):
             write_db(data)
             return p
             
+    raise HTTPException(status_code=404, detail="Producto no encontrado.")
+
+@app.put("/products/{product_id}", response_model=Product)
+def update_product(product_id: str, request: ProductUpdate):
+    """HU-05: Modifica nombre, categoría, unidad de medida y umbral de un producto."""
+    data = read_db()
+    for p in data:
+        if p["id"] == product_id:
+            p["nombre"] = request.nombre
+            p["categoria"] = request.categoria
+            p["unidad_medida"] = request.unidad_medida
+            p["stock_minimo"] = request.stock_minimo
+            write_db(data)
+            return p
+    raise HTTPException(status_code=404, detail="Producto no encontrado.")
+
+@app.delete("/products/{product_id}")
+def delete_product(product_id: str):
+    """HU-06: Elimina un producto del inventario."""
+    data = read_db()
+    for p in data:
+        if p["id"] == product_id:
+            data.remove(p)
+            write_db(data)
+            return {"message": "Producto eliminado exitosamente", "id": product_id}
     raise HTTPException(status_code=404, detail="Producto no encontrado.")
 
 @app.get("/api/health")

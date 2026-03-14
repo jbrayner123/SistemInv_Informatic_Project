@@ -41,7 +41,9 @@ Requiere tener instalado Python 3 y pip. Funciona en Windows, Mac y Linux.
   python -m venv venv
 
 - Activa el entorno virtual según tu sistema operativo:
-  En Windows (PowerShell):
+pip install fastapi "uvicorn[standard]" pydantic
+uvicorn main:app --reload
+Windows (PowerShell):
     .\venv\Scripts\Activate.ps1
   En Windows (CMD clásico):
     .\venv\Scripts\activate.bat

@@ -48,5 +48,39 @@ export const api = {
       console.error('updateStock falló:', error);
       throw new Error(error.message || 'Error al actualizar el stock.');
     }
+  },
+
+  updateProduct: async (productId, data) => {
+    try {
+      const response = await fetch(`${API_URL}/products/${productId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `Error: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('updateProduct falló:', error);
+      throw new Error(error.message || 'Error al actualizar el producto.');
+    }
+  },
+
+  deleteProduct: async (productId) => {
+    try {
+      const response = await fetch(`${API_URL}/products/${productId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || `Error: ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('deleteProduct falló:', error);
+      throw new Error(error.message || 'Error al eliminar el producto.');
+    }
   }
 };

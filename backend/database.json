@@ -1,107 +1,402 @@
 [
     {
-        "id": "HER-001",
-        "nombre": "Martillo de Galponero",
-        "categoria": "Herramientas",
-        "unidad_medida": "Unidad",
-        "cantidad": 12
+        "id": "SKU-1001",
+        "nombre": "Martillo Truper 16oz Mango Fibra",
+        "categoria": "Manuales",
+        "unidad_medida": "Pieza",
+        "cantidad": 12,
+        "stock_minimo": 5
     },
     {
-        "id": "HER-002",
-        "nombre": "Destornillador Phillips",
-        "categoria": "Herramientas",
-        "unidad_medida": "Unidad",
-        "cantidad": 45
+        "id": "SKU-1002",
+        "nombre": "Desarmador Phillips #2",
+        "categoria": "Manuales",
+        "unidad_medida": "Pieza",
+        "cantidad": 45,
+        "stock_minimo": 5
     },
     {
-        "id": "MAT-001",
-        "nombre": "Cemento Portland",
-        "categoria": "Materiales",
-        "unidad_medida": "Kg",
-        "cantidad": 200
+        "id": "SKU-1003",
+        "nombre": "Desarmador Plano 1/4x4",
+        "categoria": "Manuales",
+        "unidad_medida": "Pieza",
+        "cantidad": 40,
+        "stock_minimo": 5
     },
     {
-        "id": "MAT-002",
-        "nombre": "Arena Fina",
-        "categoria": "Materiales",
-        "unidad_medida": "Kg",
-        "cantidad": 500
+        "id": "SKU-1004",
+        "nombre": "Pinzas de Presión 10 pulg",
+        "categoria": "Manuales",
+        "unidad_medida": "Pieza",
+        "cantidad": 15,
+        "stock_minimo": 5
     },
     {
-        "id": "FIJ-001",
-        "nombre": "Clavos 2 pulgadas",
-        "categoria": "Fijación",
-        "unidad_medida": "Kg",
-        "cantidad": 50
+        "id": "SKU-1005",
+        "nombre": "Alicate Corte Diagonal",
+        "categoria": "Manuales",
+        "unidad_medida": "Pieza",
+        "cantidad": 20,
+        "stock_minimo": 5
     },
     {
-        "id": "FIJ-002",
-        "nombre": "Tornillo Autoperforante",
-        "categoria": "Fijación",
-        "unidad_medida": "Unidad",
-        "cantidad": 300
+        "id": "SKU-1006",
+        "nombre": "Llave Inglesa Ajustable 12 pulg",
+        "categoria": "Manuales",
+        "unidad_medida": "Pieza",
+        "cantidad": 8,
+        "stock_minimo": 5
     },
     {
-        "id": "PIN-001",
-        "nombre": "Pintura Latex Blanca",
-        "categoria": "Pinturas",
+        "id": "SKU-1007",
+        "nombre": "Juego de Llaves Allen",
+        "categoria": "Manuales",
+        "unidad_medida": "Set/Juego",
+        "cantidad": 12,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-2001",
+        "nombre": "Taladro Inalámbrico Dewalt 20V Max",
+        "categoria": "Eléctricas",
+        "unidad_medida": "Pieza",
+        "cantidad": 1,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-2002",
+        "nombre": "Esmeriladora Makita 4-1/2 pulg",
+        "categoria": "Eléctricas",
+        "unidad_medida": "Pieza",
+        "cantidad": 6,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-2003",
+        "nombre": "Sierra Circular Bosch",
+        "categoria": "Eléctricas",
+        "unidad_medida": "Pieza",
+        "cantidad": 2,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-2004",
+        "nombre": "Lijadora Orbital Stanley",
+        "categoria": "Eléctricas",
+        "unidad_medida": "Pieza",
+        "cantidad": 5,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-3001",
+        "nombre": "Cemento Gris Tolteca 50kg",
+        "categoria": "Construcción",
+        "unidad_medida": "Bolsa",
+        "cantidad": 145,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-3002",
+        "nombre": "Cemento Blanco Cruz Azul 25kg",
+        "categoria": "Construcción",
+        "unidad_medida": "Bolsa",
+        "cantidad": 30,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-3003",
+        "nombre": "Yeso Supremo 40kg",
+        "categoria": "Construcción",
+        "unidad_medida": "Bolsa",
+        "cantidad": 25,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-3004",
+        "nombre": "Cal Hidratada 25kg",
+        "categoria": "Construcción",
+        "unidad_medida": "Bolsa",
+        "cantidad": 60,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-3005",
+        "nombre": "Malla Electrosoldada 6x6",
+        "categoria": "Construcción",
+        "unidad_medida": "Rollo",
+        "cantidad": 10,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-3006",
+        "nombre": "Varilla Corrugada 1/2 pulg",
+        "categoria": "Construcción",
+        "unidad_medida": "Pieza",
+        "cantidad": 200,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-3007",
+        "nombre": "Pegazulejo Niasa",
+        "categoria": "Construcción",
+        "unidad_medida": "Bolsa",
+        "cantidad": 85,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-4001",
+        "nombre": "Tubo PVC Hidráulico 1/2 pulg x 6m",
+        "categoria": "Plomería",
+        "unidad_medida": "Pieza",
+        "cantidad": 80,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-4002",
+        "nombre": "Codo PVC 90° 1/2 pulg",
+        "categoria": "Plomería",
+        "unidad_medida": "Pieza",
+        "cantidad": 150,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-4003",
+        "nombre": "Tee PVC 1/2 pulg",
+        "categoria": "Plomería",
+        "unidad_medida": "Pieza",
+        "cantidad": 120,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-4004",
+        "nombre": "Tubo CPVC 3/4 pulg x 3m",
+        "categoria": "Plomería",
+        "unidad_medida": "Pieza",
+        "cantidad": 45,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-4005",
+        "nombre": "Pegamento para PVC Oatey",
+        "categoria": "Plomería",
         "unidad_medida": "Litro",
-        "cantidad": 100
+        "cantidad": 18,
+        "stock_minimo": 5
     },
     {
-        "id": "PIN-002",
-        "nombre": "Aguarras Mineral",
-        "categoria": "Pinturas",
-        "unidad_medida": "Litro",
-        "cantidad": 25
+        "id": "SKU-4006",
+        "nombre": "Válvula de Esfera Bronce 1/2",
+        "categoria": "Plomería",
+        "unidad_medida": "Pieza",
+        "cantidad": 25,
+        "stock_minimo": 5
     },
     {
-        "id": "OTR-001",
-        "nombre": "Cinta Metrica 5m",
-        "categoria": "Herramientas",
-        "unidad_medida": "Unidad",
-        "cantidad": 15
+        "id": "SKU-4007",
+        "nombre": "Cinta Teflón 1/2 pulg",
+        "categoria": "Plomería",
+        "unidad_medida": "Rollo",
+        "cantidad": 3,
+        "stock_minimo": 5
     },
     {
-        "id": "OTR-002",
-        "nombre": "Guantes de Cuero",
-        "categoria": "Otros",
-        "unidad_medida": "Unidad",
-        "cantidad": 30
-    },
-    {
-        "id": "HER-003",
-        "nombre": "Taladro Percutor",
-        "categoria": "Herramientas",
-        "unidad_medida": "Unidad",
-        "cantidad": 1
-    },
-    {
-        "id": "MAT-003",
-        "nombre": "Hierro del 8",
-        "categoria": "Materiales",
+        "id": "SKU-5001",
+        "nombre": "Cable Thw Calibre 12 AWG Cu",
+        "categoria": "Electricidad",
         "unidad_medida": "Metro",
-        "cantidad": 120
+        "cantidad": 200,
+        "stock_minimo": 5
     },
     {
-        "id": "FIJ-003",
-        "nombre": "Tarugo N8",
-        "categoria": "Fijación",
-        "unidad_medida": "Unidad",
-        "cantidad": 500
+        "id": "SKU-5002",
+        "nombre": "Cable Thw Calibre 10 AWG Cu",
+        "categoria": "Electricidad",
+        "unidad_medida": "Metro",
+        "cantidad": 150,
+        "stock_minimo": 5
     },
     {
-        "id": "PIN-003",
-        "nombre": "Pincel N20",
+        "id": "SKU-5003",
+        "nombre": "Cinta Aislante Negra 3M",
+        "categoria": "Electricidad",
+        "unidad_medida": "Rollo",
+        "cantidad": 45,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-5004",
+        "nombre": "Foco LED 10W Luz Blanca",
+        "categoria": "Electricidad",
+        "unidad_medida": "Pieza",
+        "cantidad": 100,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-5005",
+        "nombre": "Interruptor Sencillo Bticino",
+        "categoria": "Electricidad",
+        "unidad_medida": "Pieza",
+        "cantidad": 35,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-5006",
+        "nombre": "Contacto Doble Polarizado",
+        "categoria": "Electricidad",
+        "unidad_medida": "Pieza",
+        "cantidad": 40,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-5007",
+        "nombre": "Pastilla Termomagnética 20A",
+        "categoria": "Electricidad",
+        "unidad_medida": "Pieza",
+        "cantidad": 12,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-6001",
+        "nombre": "Pintura Vinílica Blanca Comex",
         "categoria": "Pinturas",
-        "unidad_medida": "Unidad",
-        "cantidad": 37
+        "unidad_medida": "Galón",
+        "cantidad": 18,
+        "stock_minimo": 5
     },
     {
-        "id": "OTR-003",
-        "nombre": "Candado 40mm",
-        "categoria": "Otros",
-        "unidad_medida": "Unidad",
-        "cantidad": 18
+        "id": "SKU-6002",
+        "nombre": "Esmalte Anticorrosivo Negro",
+        "categoria": "Pinturas",
+        "unidad_medida": "Litro",
+        "cantidad": 10,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-6003",
+        "nombre": "Brocha Pelo de Camello 2 pulg",
+        "categoria": "Pinturas",
+        "unidad_medida": "Pieza",
+        "cantidad": 25,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-6004",
+        "nombre": "Rodillo Felpa Rugosa 9 pulg",
+        "categoria": "Pinturas",
+        "unidad_medida": "Pieza",
+        "cantidad": 15,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-6005",
+        "nombre": "Thinner Estándar",
+        "categoria": "Pinturas",
+        "unidad_medida": "Litro",
+        "cantidad": 30,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-6006",
+        "nombre": "Impermeabilizante Rojo 5 Años",
+        "categoria": "Pinturas",
+        "unidad_medida": "Galón",
+        "cantidad": 8,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-7001",
+        "nombre": "Clavo para Concreto 2 pulg",
+        "categoria": "Tornillería",
+        "unidad_medida": "Caja",
+        "cantidad": 2,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-7002",
+        "nombre": "Clavo C/Cabeza 1-1/2 pulg",
+        "categoria": "Tornillería",
+        "unidad_medida": "Kilogramo",
+        "cantidad": 10,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-7003",
+        "nombre": "Tornillo Drywall 1-1/4 pulg",
+        "categoria": "Tornillería",
+        "unidad_medida": "Caja",
+        "cantidad": 0,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-7004",
+        "nombre": "Tornillo Hexagonal 3/8 x 2",
+        "categoria": "Tornillería",
+        "unidad_medida": "Caja",
+        "cantidad": 4,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-7005",
+        "nombre": "Taquete de Plástico 1/4",
+        "categoria": "Tornillería",
+        "unidad_medida": "Paquete",
+        "cantidad": 50,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-8001",
+        "nombre": "Casco de Seguridad Amarillo",
+        "categoria": "Seguridad",
+        "unidad_medida": "Pieza",
+        "cantidad": 25,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-8002",
+        "nombre": "Guantes de Cuero Carnaza",
+        "categoria": "Seguridad",
+        "unidad_medida": "Par",
+        "cantidad": 5,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-8003",
+        "nombre": "Lentes de Seguridad Claros",
+        "categoria": "Seguridad",
+        "unidad_medida": "Pieza",
+        "cantidad": 40,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-8004",
+        "nombre": "Chaleco Reflejante Naranja",
+        "categoria": "Seguridad",
+        "unidad_medida": "Pieza",
+        "cantidad": 15,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-8005",
+        "nombre": "Botas Industriales con Casquillo T26",
+        "categoria": "Seguridad",
+        "unidad_medida": "Par",
+        "cantidad": 2,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-8006",
+        "nombre": "Mascarilla N95 3M",
+        "categoria": "Seguridad",
+        "unidad_medida": "Caja",
+        "cantidad": 8,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-1999",
+        "nombre": "Pistola",
+        "categoria": "Seguridad",
+        "unidad_medida": "Pieza",
+        "cantidad": 20,
+        "stock_minimo": 5
     }
 ]

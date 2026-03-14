@@ -1,0 +1,173 @@
+import React, { useState, useEffect } from 'react';
+import './EditProductModal.css';
+
+const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    categoria: '',
+    unidad_medida: '',
+    stock_minimo: 5
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (product) {
+      setFormData({
+        nombre: product.nombre || '',
+        categoria: product.categoria || '',
+        unidad_medida: product.unidad_medida || '',
+        stock_minimo: product.stock_minimo !== undefined ? product.stock_minimo : 5
+      });
+    }
+  }, [product]);
+
+  if (!isOpen || !product) return null;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      await onSave(product.id, formData);
+      onClose();
+    } catch (err) {
+      setError(err.message || 'Error al guardar los cambios');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="modal-overlay">
+      <div className="modal-content card">
+        <h3>Editar Producto</h3>
+        <p className="modal-subtitle">ID: <span className="font-mono">{product.id}</span></p>
+        
+        {error && <div className="alert error mb-4">{error}</div>}
+        
+        <form onSubmit={handleSubmit} className="edit-form">
+          <div className="form-group">
+            <label htmlFor="edit-nombre">Nombre del Producto</label>
+            <div className="input-icon-wrapper">
+              <span className="input-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              </span>
+              <input
+                type="text"
+                id="edit-nombre"
+                name="nombre"
+                value={formData.nombre}
+                onChange={handleChange}
+                placeholder="Ej: Martillo Truper 16oz"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group half-width">
+              <label htmlFor="edit-categoria">Categoría</label>
+              <div className="input-icon-wrapper select-wrapper">
+                <span className="input-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+                </span>
+                <select
+                  id="edit-categoria"
+                  name="categoria"
+                  value={formData.categoria}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled hidden>Seleccione categoría</option>
+                  <option value="Manuales">Manuales</option>
+                  <option value="Eléctricas">Eléctricas</option>
+                  <option value="Construcción">Construcción</option>
+                  <option value="Plomería">Plomería</option>
+                  <option value="Electricidad">Electricidad</option>
+                  <option value="Pinturas">Pinturas</option>
+                  <option value="Tornillería">Tornillería</option>
+                  <option value="Seguridad">Seguridad</option>
+                  <option value="Otros">Otros</option>
+                </select>
+                <span className="select-chevron">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </span>
+              </div>
+            </div>
+
+            <div className="form-group half-width">
+              <label htmlFor="edit-unidad_medida">Unidad</label>
+              <div className="input-icon-wrapper select-wrapper">
+                <span className="input-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg>
+                </span>
+                <select
+                  id="edit-unidad_medida"
+                  name="unidad_medida"
+                  value={formData.unidad_medida}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="" disabled hidden>Unidad</option>
+                  <option value="Pieza">Pieza (pz)</option>
+                  <option value="Caja">Caja</option>
+                  <option value="Metro">Metro (m)</option>
+                  <option value="Litro">Litro (L)</option>
+                  <option value="Kilogramo">Kilogramo (kg)</option>
+                  <option value="Galón">Galón</option>
+                  <option value="Bolsa">Bolsa</option>
+                  <option value="Paquete">Paquete</option>
+                  <option value="Rollo">Rollo</option>
+                  <option value="Par">Par</option>
+                  <option value="Set/Juego">Set/Juego</option>
+                </select>
+                <span className="select-chevron">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="modal-actions-premium">
+            <button 
+              type="button" 
+              className="btn-premium btn-cancel" 
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              className="btn-premium btn-save"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <svg className="spin-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
+                  <span>Guardando...</span>
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+                  <span>Guardar Cambios</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default EditProductModal;
