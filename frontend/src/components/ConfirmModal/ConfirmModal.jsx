@@ -13,14 +13,14 @@ const ConfirmModal = ({ isOpen, title, message, onConfirm, onCancel, confirmText
         <div className="modal-actions confirm-actions">
           <button 
             type="button" 
-            className="btn btn-secondary" 
+            className="btn-premium btn-cancel" 
             onClick={onCancel}
           >
             {cancelText}
           </button>
           <button 
             type="button" 
-            className="btn btn-danger"
+            className="btn-premium btn-confirm-danger"
             onClick={onConfirm}
           >
             {confirmText}

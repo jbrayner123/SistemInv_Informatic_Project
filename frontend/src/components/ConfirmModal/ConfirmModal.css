@@ -1,34 +1,51 @@
+/* El ConfirmModal reutiliza .btn-premium / .btn-cancel del EditProductModal.css
+   que se cargan en el mismo bundle – no los duplicamos, solo añadimos lo específico */
+
 .confirm-modal {
-  max-width: 400px;
-  padding: 1.5rem 2rem;
+  max-width: 420px;
+  padding: 2rem;
   text-align: center;
 }
 
 .confirm-title {
   color: var(--danger);
-  margin-bottom: 1rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
 }
 
 .confirm-message {
-  color: var(--text-color);
-  margin-bottom: 1.5rem;
+  color: var(--muted-text);
+  margin-bottom: 1.75rem;
   font-size: 1rem;
+  line-height: 1.6;
 }
 
 .confirm-actions {
+  display: flex;
   justify-content: center;
-  border-top: none;
-  padding-top: 0;
-  margin-top: 0;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.btn-danger {
+/* Variante roja específica del confirm – en vez de reusar .btn-danger global */
+.btn-confirm-danger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
   background-color: var(--danger);
-  color: white;
-  box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);
+  color: #ffffff;
+  box-shadow: 0 4px 12px -2px rgba(239, 68, 68, 0.35);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.btn-danger:hover:not(:disabled) {
-  background-color: #dc2626; /* Un tono ligeramente más oscuro del danger */
+.btn-confirm-danger:hover {
+  background-color: #dc2626;
   transform: translateY(-1px);
+  box-shadow: 0 6px 14px -2px rgba(239, 68, 68, 0.45);
 }
