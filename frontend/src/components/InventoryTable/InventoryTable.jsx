@@ -7,7 +7,7 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import InventoryFilterBar from '../InventoryFilterBar/InventoryFilterBar';
 import { saveAs } from 'file-saver';
 
-const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
+const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin' }) => {
   const { addToast } = useToast();
   const [stockUpdateAmount, setStockUpdateAmount] = useState({});
   const [submittingIds, setSubmittingIds] = useState(new Set());
@@ -351,6 +351,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
               <th onClick={() => requestSort('cantidad')} className="sortable-header">
                 Stock Actual {getSortIcon('cantidad')}
               </th>
+              {/* Solo admin ve la columna de acciones CRUD */}
               <th>Acciones</th>
             </tr>
           </thead>
@@ -415,24 +416,27 @@ const InventoryTable = ({ products, onStockUpdated, loading, error }) => {
                         </button>
                       </div>
 
-                      <div className="crud-actions-group">
-                        <button 
-                          className="btn-crud btn-edit" 
-                          onClick={() => setEditingProduct(product)}
-                          title="Editar Producto"
-                          disabled={submittingIds.has(product.id)}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                        </button>
-                        <button 
-                          className="btn-crud btn-delete" 
-                          onClick={() => handleDeleteClick(product.id, product.nombre)}
-                          title="Eliminar Producto"
-                          disabled={submittingIds.has(product.id)}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
-                        </button>
-                      </div>
+                      {/* Botones de Editar/Eliminar — solo visibles para admin */}
+                      {rol === 'admin' && (
+                        <div className="crud-actions-group">
+                          <button 
+                            className="btn-crud btn-edit" 
+                            onClick={() => setEditingProduct(product)}
+                            title="Editar Producto"
+                            disabled={submittingIds.has(product.id)}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                          </button>
+                          <button 
+                            className="btn-crud btn-delete" 
+                            onClick={() => handleDeleteClick(product.id, product.nombre)}
+                            title="Eliminar Producto"
+                            disabled={submittingIds.has(product.id)}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                          </button>
+                        </div>
+                      )}
                     </div>
                     {localErrors[product.id] && (
                       <div className="local-error">{localErrors[product.id]}</div>

@@ -1,0 +1,318 @@
+/* ─── Layout ─────────────────────────────────────────────────────── */
+.login-root {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--bg-color);
+}
+
+/* ─── Brand Panel (left) ─────────────────────────────────────────── */
+.login-panel-brand {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 30%;
+  max-width: 320px;
+  padding: 2.5rem 2rem;
+  background-color: var(--primary);
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Círculos decorativos sutiles */
+.login-panel-brand::before {
+  content: '';
+  position: absolute;
+  width: 360px;
+  height: 360px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  top: -80px;
+  right: -100px;
+}
+
+.login-panel-brand::after {
+  content: '';
+  position: absolute;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  bottom: 60px;
+  left: -60px;
+}
+
+.brand-content {
+  position: relative;
+  z-index: 1;
+}
+
+.brand-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  margin-bottom: 1.5rem;
+}
+
+.brand-name {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin: 0 0 0.75rem;
+  color: #fff;
+}
+
+.brand-tagline {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0 0 2.5rem;
+}
+
+.brand-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.brand-features li {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.brand-features li::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.brand-year {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.4);
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Form Panel (right) ─────────────────────────────────────────── */
+.login-panel-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 1.5rem 2rem 2rem;
+}
+
+.login-theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--muted-text);
+  font-size: 0.8rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.login-theme-btn:hover {
+  color: var(--text-color);
+  border-color: var(--text-color);
+}
+
+.form-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+/* ─── Form Header ────────────────────────────────────────────────── */
+.form-header {
+  margin-bottom: 2rem;
+}
+
+.form-header h2 {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--text-color);
+  letter-spacing: -0.025em;
+  margin: 0 0 0.35rem;
+}
+
+.form-header p {
+  font-size: 0.9rem;
+  color: var(--muted-text);
+  margin: 0;
+}
+
+/* ─── Fields ─────────────────────────────────────────────────────── */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.field label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.field input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-color);
+  font-size: 0.95rem;
+  transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(38, 166, 154, 0.15);
+}
+
+.field input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input-error-state {
+  border-color: var(--danger) !important;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 2.75rem;
+}
+
+.eye-toggle {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--muted-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.2rem;
+  transition: color 0.15s;
+}
+
+.eye-toggle:hover { color: var(--text-color); }
+
+/* ─── Error ──────────────────────────────────────────────────────── */
+.form-error {
+  font-size: 0.85rem;
+  color: var(--danger);
+  margin: 0;
+  padding: 0.6rem 0.85rem;
+  background: rgba(239, 68, 68, 0.06);
+  border-left: 3px solid var(--danger);
+  border-radius: 0 6px 6px 0;
+}
+
+/* ─── Submit ─────────────────────────────────────────────────────── */
+.btn-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 0.35rem;
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.15s;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spin {
+  animation: spin 0.75s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Hint ───────────────────────────────────────────────────────── */
+.form-hint {
+  margin-top: 1.75rem;
+  font-size: 0.8rem;
+  color: var(--muted-text);
+  border-top: 1px solid var(--border-color);
+  padding-top: 1.25rem;
+}
+
+.form-hint code {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  color: var(--primary);
+  font-size: 0.8rem;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .login-root { flex-direction: column; }
+
+  .login-panel-brand {
+    width: 100%;
+    max-width: 100%;
+    padding: 2rem;
+    min-height: unset;
+  }
+
+  .brand-features { display: none; }
+
+  .login-panel-form {
+    padding: 1.5rem;
+    align-items: center;
+  }
+}
