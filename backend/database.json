@@ -1,18 +1,10 @@
 [
     {
-        "id": "SKU-1001",
-        "nombre": "Martillo Truper 16oz Mango Fibra",
-        "categoria": "Manuales",
-        "unidad_medida": "Pieza",
-        "cantidad": 32,
-        "stock_minimo": 5
-    },
-    {
         "id": "SKU-1002",
-        "nombre": "Desarmador Phillips #2",
+        "nombre": "Desarmador Phillips #4",
         "categoria": "Manuales",
         "unidad_medida": "Pieza",
-        "cantidad": 45,
+        "cantidad": 40,
         "stock_minimo": 5
     },
     {
@@ -24,19 +16,11 @@
         "stock_minimo": 5
     },
     {
-        "id": "SKU-1004",
-        "nombre": "Pinzas de Presión 10 pulg",
-        "categoria": "Manuales",
-        "unidad_medida": "Pieza",
-        "cantidad": 15,
-        "stock_minimo": 5
-    },
-    {
         "id": "SKU-1005",
         "nombre": "Alicate Corte Diagonal",
         "categoria": "Manuales",
         "unidad_medida": "Pieza",
-        "cantidad": 20,
+        "cantidad": 25,
         "stock_minimo": 5
     },
     {
@@ -60,7 +44,7 @@
         "nombre": "Taladro Inalámbrico Dewalt 20V Max",
         "categoria": "Eléctricas",
         "unidad_medida": "Pieza",
-        "cantidad": 1,
+        "cantidad": 0,
         "stock_minimo": 5
     },
     {
@@ -395,6 +379,14 @@
         "id": "SKU-1999",
         "nombre": "Pistola",
         "categoria": "Seguridad",
+        "unidad_medida": "Pieza",
+        "cantidad": 20,
+        "stock_minimo": 5
+    },
+    {
+        "id": "SKU-10001",
+        "nombre": "Martillo de dos cabezas",
+        "categoria": "Plomería",
         "unidad_medida": "Pieza",
         "cantidad": 20,
         "stock_minimo": 5

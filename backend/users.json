@@ -3,12 +3,26 @@
         "username": "admin",
         "password": "admin",
         "rol": "admin",
-        "nombre_completo": "Administrador del Sistema"
+        "nombre_completo": "Administrador del Sistema",
+        "last_cleared_history": "2026-03-18T14:48:38.669059"
     },
     {
         "username": "josi",
         "password": "josi",
         "rol": "empleado",
-        "nombre_completo": "Empleado Genérico"
+        "nombre_completo": "Josi",
+        "last_cleared_history": "2026-03-18T15:12:02.125888"
+    },
+    {
+        "username": "bahamon",
+        "password": "bahamon",
+        "rol": "empleado",
+        "nombre_completo": "Bahamon"
+    },
+    {
+        "username": "roiman",
+        "password": "roiman",
+        "rol": "empleado",
+        "nombre_completo": "Roiman"
     }
 ]

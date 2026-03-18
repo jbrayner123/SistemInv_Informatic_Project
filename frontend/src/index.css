@@ -36,6 +36,25 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+/* ─── Custom Webkit Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--border-color);
+  border-radius: 10px;
+  border: 3px solid var(--bg-color); /* Crea un "padding" falso */
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--muted-text);
 }
 
 body {

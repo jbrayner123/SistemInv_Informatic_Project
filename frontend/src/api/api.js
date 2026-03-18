@@ -59,6 +59,7 @@ export const api = {
       const err = await response.json();
       throw new Error(err.detail || `Error ${response.status}`);
     }
+    window.dispatchEvent(new Event('inventory-changed'));
     return response.json();
   },
 
@@ -73,6 +74,7 @@ export const api = {
       const err = await response.json();
       throw new Error(err.detail || `Error ${response.status}`);
     }
+    window.dispatchEvent(new Event('inventory-changed'));
     return response.json();
   },
 
@@ -87,6 +89,7 @@ export const api = {
       const err = await response.json();
       throw new Error(err.detail || `Error ${response.status}`);
     }
+    window.dispatchEvent(new Event('inventory-changed'));
     return response.json();
   },
 
@@ -100,6 +103,35 @@ export const api = {
       const err = await response.json();
       throw new Error(err.detail || `Error ${response.status}`);
     }
+    window.dispatchEvent(new Event('inventory-changed'));
     return response.json();
   },
+
+  getHistory: async () => {
+    const token = getStoredToken();
+    const response = await fetch(`${API_URL}/api/history`, {
+      method: 'GET',
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) {
+      if (response.status === 401) throw new Error('SESIÓN EXPIRADA');
+      const err = await response.json();
+      throw new Error(err.detail || `Error al obtener historial`);
+    }
+    return response.json();
+  },
+
+  clearHistory: async () => {
+    const token = getStoredToken();
+    const response = await fetch(`${API_URL}/api/history/clear`, {
+      method: 'POST',
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) {
+      if (response.status === 401) throw new Error('SESIÓN EXPIRADA');
+      const err = await response.json();
+      throw new Error(err.detail || `Error al limpiar historial`);
+    }
+    return response.json();
+  }
 };

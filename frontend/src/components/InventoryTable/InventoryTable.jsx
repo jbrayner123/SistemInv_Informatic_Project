@@ -4,7 +4,6 @@ import { useToast } from '../Toast/ToastContext';
 import './InventoryTable.css';
 import EditProductModal from '../EditProductModal/EditProductModal';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
-import InventoryFilterBar from '../InventoryFilterBar/InventoryFilterBar';
 import { saveAs } from 'file-saver';
 
 const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin' }) => {
@@ -16,12 +15,6 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [editingProduct, setEditingProduct] = useState(null);
   const [productToDelete, setProductToDelete] = useState(null);
-  
-  // Filtros
-  const [searchTerm, setSearchTerm] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('ALL');
-  const [statusFilter, setStatusFilter] = useState('ALL');
-  
   const itemsPerPage = 10;
 
   // Reset to first page when products array length changes significantly
@@ -128,33 +121,8 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
     return <div className="alert error">Error al cargar el inventario: {error}</div>;
   }
 
-  // Filtering logic
-  let filteredProducts = [...products];
-
-  if (searchTerm.trim()) {
-    const term = searchTerm.toLowerCase();
-    filteredProducts = filteredProducts.filter(p => 
-      String(p.id).toLowerCase().includes(term) || 
-      p.nombre.toLowerCase().includes(term)
-    );
-  }
-
-  if (categoryFilter !== 'ALL') {
-    filteredProducts = filteredProducts.filter(p => p.categoria === categoryFilter);
-  }
-
-  if (statusFilter !== 'ALL') {
-    filteredProducts = filteredProducts.filter(p => {
-      const threshold = p.stock_minimo !== undefined ? p.stock_minimo : 5;
-      if (statusFilter === 'OUT') return p.cantidad === 0;
-      if (statusFilter === 'LOW') return p.cantidad > 0 && p.cantidad <= threshold;
-      if (statusFilter === 'OK') return p.cantidad > threshold;
-      return true;
-    });
-  }
-
-  // Sorting logic on filtered items
-  let sortedProducts = [...filteredProducts];
+  // Sorting logic
+  let sortedProducts = [...products];
   if (sortConfig.key) {
     sortedProducts.sort((a, b) => {
       let aVal = a[sortConfig.key];
@@ -172,15 +140,12 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
   }
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const totalPages = Math.ceil(products.length / itemsPerPage);
   const MathPages = totalPages > 0 ? totalPages : 1;
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProducts = sortedProducts.slice(indexOfFirstItem, indexOfLastItem);
   
-  // Categorías Únicas
-  const uniqueCategories = [...new Set(products.map(p => p.categoria))];
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const requestSort = (key) => {
@@ -199,7 +164,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
   };
 
   const exportToExcel = async () => {
-    if (!filteredProducts || filteredProducts.length === 0) {
+    if (!products || products.length === 0) {
       addToast('No hay productos para exportar.', 'error');
       return;
     }
@@ -314,23 +279,13 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
         <button 
           onClick={exportToExcel}
           className="btn-premium btn-export"
-          disabled={filteredProducts.length === 0}
+          disabled={products.length === 0}
           title="Descargar Inventario con diseño a Excel (.xlsx)"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
           Exportar Excel
         </button>
       </div>
-
-      <InventoryFilterBar 
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        categoryFilter={categoryFilter}
-        onCategoryChange={setCategoryFilter}
-        statusFilter={statusFilter}
-        onStatusChange={setStatusFilter}
-        categories={uniqueCategories}
-      />
       
       <div className="table-container">
         <table className="inventory-table">
@@ -356,10 +311,10 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
             </tr>
           </thead>
           <tbody>
-            {filteredProducts.length === 0 ? (
+            {products.length === 0 ? (
               <tr>
                 <td colSpan="6" className="empty-state">
-                  No se encontraron productos que coincidan con los filtros actuales.
+                  No hay productos registrados en el inventario.
                 </td>
               </tr>
             ) : (
