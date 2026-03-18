@@ -6,8 +6,8 @@
         "nombre_completo": "Administrador del Sistema"
     },
     {
-        "username": "empleado1",
-        "password": "empleado1",
+        "username": "josi",
+        "password": "josi",
         "rol": "empleado",
         "nombre_completo": "Empleado Genérico"
     }

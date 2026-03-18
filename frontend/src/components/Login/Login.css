@@ -1,8 +1,31 @@
+/* Transición de tema consistente con el resto de la app */
+.login-root *,
+.login-root *::before,
+.login-root *::after {
+  transition-property: background-color, color, border-color, box-shadow;
+  transition-duration: 0.4s;
+  transition-timing-function: ease;
+}
+
 /* ─── Layout ─────────────────────────────────────────────────────── */
 .login-root {
   display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 100vh;
-  background-color: var(--bg-color);
+  padding: 2rem;
+  background-color: var(--primary);
+}
+
+/* Tarjeta contenedora con esquinas redondeadas */
+.login-card-wrap {
+  display: flex;
+  width: 100%;
+  max-width: 1800px;
+  min-height: 940px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.25);
 }
 
 /* ─── Brand Panel (left) ─────────────────────────────────────────── */
@@ -19,28 +42,54 @@
   overflow: hidden;
 }
 
-/* Círculos decorativos sutiles */
-.login-panel-brand::before {
-  content: '';
+/* Esferas decorativas */
+.deco-orb {
   position: absolute;
-  width: 360px;
-  height: 360px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  top: -80px;
-  right: -100px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-.login-panel-brand::after {
-  content: '';
-  position: absolute;
+.deco-orb-1 {
+  width: 380px;
+  height: 380px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  top: -100px;
+  right: -120px;
+}
+
+.deco-orb-2 {
   width: 220px;
   height: 220px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  bottom: 60px;
-  left: -60px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  bottom: 40px;
+  left: -70px;
 }
+
+.deco-orb-3 {
+  width: 140px;
+  height: 140px;
+  background: rgba(255, 255, 255, 0.04);
+  top: 30%;
+  right: -30px;
+}
+
+.deco-orb-4 {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.06);
+  bottom: 18%;
+  right: 20px;
+}
+
+.deco-orb-5 {
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  top: 22%;
+  left: 20px;
+}
+
 
 .brand-content {
   position: relative;
@@ -106,6 +155,47 @@
   z-index: 1;
 }
 
+/* Esferas decorativas del panel de formulario */
+.form-orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.form-orb-1 {
+  width: 420px;
+  height: 420px;
+  border: 1px solid var(--border-color);
+  top: -140px;
+  right: -140px;
+}
+
+.form-orb-2 {
+  width: 200px;
+  height: 200px;
+  border: 1px solid var(--border-color);
+  bottom: 40px;
+  left: -80px;
+}
+
+.form-orb-3 {
+  width: 100px;
+  height: 100px;
+  background: rgba(38, 166, 154, 0.05);
+  top: 40%;
+  right: 30px;
+}
+
+.form-orb-4 {
+  width: 55px;
+  height: 55px;
+  border: 1px solid var(--primary);
+  opacity: 0.15;
+  bottom: 22%;
+  right: 80px;
+}
+
 /* ─── Form Panel (right) ─────────────────────────────────────────── */
 .login-panel-form {
   flex: 1;
@@ -113,6 +203,7 @@
   flex-direction: column;
   align-items: flex-end;
   padding: 1.5rem 2rem 2rem;
+  background-color: var(--bg-color);
 }
 
 .login-theme-btn {
@@ -140,7 +231,7 @@
   flex-direction: column;
   justify-content: center;
   width: 100%;
-  max-width: 380px;
+  max-width: 560px;
   margin: 0 auto;
   padding: 2rem 0;
 }
