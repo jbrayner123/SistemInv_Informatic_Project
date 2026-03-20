@@ -29,7 +29,7 @@ MONGODB_URI = os.environ.get(
     "mongodb+srv://jbrayner123:lucas300@cluster0.bczisjc.mongodb.net/?appName=Cluster0"
 )
 
-client = MongoClient(MONGODB_URI)
+client = MongoClient(MONGODB_URI, tlsAllowInvalidCertificates=True)
 db = client["sisteminv"]
 
 col_products = db["products"]
