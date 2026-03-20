@@ -1,5 +1,6 @@
 import os
 import secrets
+import certifi
 from typing import List, Optional
 from datetime import datetime
 from fastapi import FastAPI, HTTPException, Depends, Header
@@ -29,7 +30,7 @@ MONGODB_URI = os.environ.get(
     "mongodb+srv://jbrayner123:lucas300@cluster0.bczisjc.mongodb.net/?appName=Cluster0"
 )
 
-client = MongoClient(MONGODB_URI, tlsAllowInvalidCertificates=True)
+client = MongoClient(MONGODB_URI, tlsCAFile=certifi.where())
 db = client["sisteminv"]
 
 col_products = db["products"]
