@@ -33,6 +33,11 @@
   border-left: 4px solid #b71c1c;
 }
 
+.toast-info {
+  background-color: #d97706;
+  border-left: 4px solid #b45309;
+}
+
 .toast-close {
   background: transparent;
   border: none;
