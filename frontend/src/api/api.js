@@ -6,10 +6,10 @@ const getAuthHeaders = (token) => ({
   ...(token ? { 'Authorization': token } : {}),
 });
 
-/** Recupera el token de sesión almacenado en localStorage. */
+/** Recupera el token de sesión almacenado en sessionStorage. */
 const getStoredToken = () => {
   try {
-    const stored = localStorage.getItem('sisteminv_session');
+    const stored = sessionStorage.getItem('sisteminv_session');
     return stored ? JSON.parse(stored).token : null;
   } catch {
     return null;
@@ -41,8 +41,9 @@ export const api = {
   // ─── Products ────────────────────────────────────────────────────
   getProducts: async () => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/products`, {
+    const response = await fetch(`${API_URL}/products?_t=${Date.now()}`, {
       headers: getAuthHeaders(token),
+      cache: 'no-store',
     });
     if (!response.ok) throw new Error(`Error ${response.status}: ${response.statusText}`);
     return response.json();
@@ -109,9 +110,10 @@ export const api = {
 
   getHistory: async () => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/api/history`, {
+    const response = await fetch(`${API_URL}/api/history?_t=${Date.now()}`, {
       method: 'GET',
       headers: getAuthHeaders(token),
+      cache: 'no-store',
     });
     if (!response.ok) {
       if (response.status === 401) throw new Error('SESIÓN EXPIRADA');

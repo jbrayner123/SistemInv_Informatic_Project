@@ -4,7 +4,7 @@
         "nombre": "Desarmador Phillips #4",
         "categoria": "Manuales",
         "unidad_medida": "Pieza",
-        "cantidad": 40,
+        "cantidad": 41,
         "stock_minimo": 5
     },
     {
@@ -20,7 +20,7 @@
         "nombre": "Alicate Corte Diagonal",
         "categoria": "Manuales",
         "unidad_medida": "Pieza",
-        "cantidad": 25,
+        "cantidad": 21,
         "stock_minimo": 5
     },
     {

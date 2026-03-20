@@ -10,7 +10,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(() => {
     try {
-      const stored = localStorage.getItem('sisteminv_session');
+      const stored = sessionStorage.getItem('sisteminv_session');
       return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       username: data.username,
       nombre_completo: data.nombre_completo,
     };
-    localStorage.setItem('sisteminv_session', JSON.stringify(sessionData));
+    sessionStorage.setItem('sisteminv_session', JSON.stringify(sessionData));
     setSession(sessionData);
     return sessionData;
   }, []);
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
         // El servidor puede estar caído; limpiar sesión local de todas formas.
       }
     }
-    localStorage.removeItem('sisteminv_session');
+    sessionStorage.removeItem('sisteminv_session');
     setSession(null);
   }, [session]);
 

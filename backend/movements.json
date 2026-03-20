@@ -1,5 +1,173 @@
 [
     {
+        "id": "f55b33c6477476e6",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "SALIDA",
+        "detalles": "Retiró 14 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:22:31.546962"
+    },
+    {
+        "id": "7ded72e9eaa79a56",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "ENTRADA",
+        "detalles": "Añadió 5 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:22:21.075643"
+    },
+    {
+        "id": "db2cc30a1029b774",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "SALIDA",
+        "detalles": "Retiró 7 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:22:12.141686"
+    },
+    {
+        "id": "f60a0dc78d8fee32",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "SALIDA",
+        "detalles": "Retiró 10 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:22:01.747144"
+    },
+    {
+        "id": "628025a847b12df2",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "SALIDA",
+        "detalles": "Retiró 5 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:21:37.273871"
+    },
+    {
+        "id": "0728052dca907f91",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "ENTRADA",
+        "detalles": "Añadió 5 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:21:30.864430"
+    },
+    {
+        "id": "bb29c5595bdbc503",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "SALIDA",
+        "detalles": "Retiró 4 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:21:26.412509"
+    },
+    {
+        "id": "cf4e51afbc23788b",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "ENTRADA",
+        "detalles": "Añadió 4 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:21:12.914170"
+    },
+    {
+        "id": "ed90c5a0d94ddf51",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "ENTRADA",
+        "detalles": "Añadió 5 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:19:36.305067"
+    },
+    {
+        "id": "6a72de29343b2dea",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "ENTRADA",
+        "detalles": "Añadió 2 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:19:23.960837"
+    },
+    {
+        "id": "baa466b906635967",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "SALIDA",
+        "detalles": "Retiró 40 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:17:17.130692"
+    },
+    {
+        "id": "8d1fa3773b635f9e",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "ENTRADA",
+        "detalles": "Añadió 55 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:17:13.003605"
+    },
+    {
+        "id": "7b25c4d22b34ea27",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "SALIDA",
+        "detalles": "Retiró 1 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:17:04.789841"
+    },
+    {
+        "id": "862de623eab9905d",
+        "usuario": "Josi",
+        "rol": "empleado",
+        "accion": "ENTRADA",
+        "detalles": "Añadió 2 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:15:41.495914"
+    },
+    {
+        "id": "dbe3a6a45a740f66",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "SALIDA",
+        "detalles": "Retiró 5 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:15:37.051768"
+    },
+    {
+        "id": "75de8344d4702f92",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "ENTRADA",
+        "detalles": "Añadió 1 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:15:24.783021"
+    },
+    {
+        "id": "d58ac282df00f9f1",
+        "usuario": "Bahamon",
+        "rol": "empleado",
+        "accion": "ENTRADA",
+        "detalles": "Añadió 5 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:13:08.743854"
+    },
+    {
+        "id": "d0d7b7e5685410c0",
+        "usuario": "Bahamon",
+        "rol": "empleado",
+        "accion": "ENTRADA",
+        "detalles": "Añadió 4 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T15:12:37.636967"
+    },
+    {
+        "id": "7ae0f069e3c82202",
+        "usuario": "Roiman",
+        "rol": "empleado",
+        "accion": "SALIDA",
+        "detalles": "Retiró 4 unidades de Alicate Corte Diagonal",
+        "fecha": "2026-03-20T15:10:31.557613"
+    },
+    {
+        "id": "30780eb9a82b39e6",
+        "usuario": "Josi",
+        "rol": "empleado",
+        "accion": "ENTRADA",
+        "detalles": "Añadió 4 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T08:31:05.868818"
+    },
+    {
+        "id": "be9e3aef4952efe5",
+        "usuario": "Josi",
+        "rol": "empleado",
+        "accion": "SALIDA",
+        "detalles": "Retiró 5 unidades de Desarmador Phillips #4",
+        "fecha": "2026-03-20T08:30:58.151311"
+    },
+    {
         "id": "c140d17a00626d00",
         "usuario": "Administrador del Sistema",
         "rol": "admin",

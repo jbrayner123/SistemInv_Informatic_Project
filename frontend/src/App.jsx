@@ -31,22 +31,38 @@ function AppShell() {
     }
   }, [isDarkMode]);
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (isBackground = false) => {
     if (!session) return;
     try {
-      setLoading(true);
+      if (!isBackground) setLoading(true);
       const data = await api.getProducts();
       setProducts(data);
-      setError(null);
+      if (!isBackground) setError(null);
     } catch (err) {
-      setError(err.message);
+      if (!isBackground) setError(err.message);
     } finally {
-      setLoading(false);
+      if (!isBackground) setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (session) fetchProducts();
+    if (!session) return;
+    
+    fetchProducts();
+    
+    // Evento instantáneo local
+    const handleInventoryChange = () => fetchProducts(true);
+    window.addEventListener('inventory-changed', handleInventoryChange);
+    
+    // Polling remoto (3s) para otros usuarios
+    const intervalId = setInterval(() => {
+      fetchProducts(true);
+    }, 3000);
+
+    return () => {
+      window.removeEventListener('inventory-changed', handleInventoryChange);
+      clearInterval(intervalId);
+    };
   }, [session]);
 
   // Sin sesión → solo renderizar Login
