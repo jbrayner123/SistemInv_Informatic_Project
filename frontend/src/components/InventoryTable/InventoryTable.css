@@ -281,6 +281,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--border-color);
   margin-top: 1rem;
@@ -288,7 +290,9 @@
 
 .page-numbers {
   display: flex;
-  gap: 0.5rem;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
 }
 
 .btn-pagination {
@@ -296,10 +300,17 @@
   color: var(--text-color);
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  padding: 0.5rem 1rem;
-  font-weight: 500;
+  padding: 0.5rem 0.875rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1;
   cursor: pointer;
   transition: all 0.2s;
+  min-width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-pagination:hover:not(:disabled) {

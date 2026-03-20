@@ -411,7 +411,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
             disabled={currentPage === 1}
             className="btn-pagination"
           >
-            Anterior
+            ←
           </button>
           
           <div className="page-numbers">
@@ -431,7 +431,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
             disabled={currentPage === totalPages}
             className="btn-pagination"
           >
-            Siguiente
+            →
           </button>
         </div>
       )}
