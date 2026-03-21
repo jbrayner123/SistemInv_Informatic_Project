@@ -1,7 +1,7 @@
 import os
 import secrets
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, timezone
 from fastapi import FastAPI, HTTPException, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
@@ -189,7 +189,7 @@ def log_movement(user: dict, action: str, details: str):
         "rol": user.get("rol", "Desconocido"),
         "accion": action,
         "detalles": details,
-        "fecha": datetime.now().isoformat()
+        "fecha": datetime.now(timezone.utc).isoformat()
     }
     col_movements.insert_one(movement)
     # Mantener solo los últimos 500 movimientos
@@ -362,7 +362,7 @@ def get_history(current_user: dict = Depends(get_current_user)):
 def clear_history(current_user: dict = Depends(get_current_user)):
     result = col_users.update_one(
         {"username": current_user["username"]},
-        {"$set": {"last_cleared_history": datetime.now().isoformat()}}
+        {"$set": {"last_cleared_history": datetime.now(timezone.utc).isoformat()}}
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
