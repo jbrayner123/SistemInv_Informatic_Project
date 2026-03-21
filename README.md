@@ -7,21 +7,6 @@ Este MVP (Software Mínimo Viable) resuelve el problema central: brindar una pla
 
 --------------------------------------------------
 
-HISTORIAS DE USUARIO (HU) COMPLETADAS EN EL SPRINT MVP
-
-1. [HU-04] Registrar producto (Formulario de creación):
-   El sistema permite al administrador ingresar un nuevo producto (SKU/ID, Nombre, Categoría, Unidad de Medida y Stock Inicial) asegurando que no existan IDs duplicados.
-
-2. [HU-09] Registrar entrada de productos (Sumar stock a uno existente):
-   Directamente sobre la vista del inventario, los operarios pueden sumar rápidamente artículos recién llegados a un producto ya existente, reflejando el nuevo total sin salir de la pantalla.
-
-3. [HU-12] Visualizar niveles de stock (Tabla de inventario):
-   Panel (Dashboard) en tiempo real con una lista ordenada de todo el modelo de catálogo actual, resaltando con distintivos visuales si el stock está en estado óptimo o bajo.
-
-Nota: El sistema incluye Modo Oscuro/Claro integrado para optimizar la ergonomía visual del operario y notificaciones flotantes (Toasts) de confirmación de éxito y de control estricto de errores.
-
---------------------------------------------------
-
 TECNOLOGIAS UTILIZADAS
 - Backend: Python, FastAPI, Uvicorn y Pydantic (Simulación de BD persistente en database.json).
 - Frontend: React, Vite y CSS (Desarrollo estructurado por componentes modulares).
