@@ -52,7 +52,8 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
       addToast(`Se ${actionText} ${amount} ${updatedProduct.unidad_medida.toLowerCase()} de ${updatedProduct.nombre}.`, 'success');
       
       // Notify if remaining stock is extremely low
-      if (updatedProduct.cantidad <= 5 && updatedProduct.cantidad > 0) {
+      const threshold = updatedProduct.stock_minimo !== undefined ? updatedProduct.stock_minimo : 5;
+      if (updatedProduct.cantidad <= threshold && updatedProduct.cantidad > 0) {
         addToast(`ALERTA: Quedan solo ${updatedProduct.cantidad} ${updatedProduct.unidad_medida.toLowerCase()} de ${updatedProduct.nombre}.`, 'error');
       } else if (updatedProduct.cantidad === 0) {
         addToast(`ALERTA: No hay Stock del producto ${updatedProduct.nombre}.`, 'error');

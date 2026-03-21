@@ -19,7 +19,7 @@ const ProductForm = ({ onProductAdded }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     
-    if (name === 'cantidad') {
+    if (name === 'cantidad' || name === 'stock_minimo') {
       const parsedValue = parseInt(value);
       setFormData(prev => ({
         ...prev,
@@ -37,6 +37,13 @@ const ProductForm = ({ onProductAdded }) => {
     setFormData(prev => ({
       ...prev,
       cantidad: Math.max(0, (parseInt(prev.cantidad) || 0) + amount)
+    }));
+  };
+
+  const adjustStockMinimo = (amount) => {
+    setFormData(prev => ({
+      ...prev,
+      stock_minimo: Math.max(0, (parseInt(prev.stock_minimo) || 0) + amount)
     }));
   };
 
@@ -116,6 +123,40 @@ const ProductForm = ({ onProductAdded }) => {
             <option value="Par">Par</option>
             <option value="Set/Juego">Set/Juego</option>
           </select>
+        </div>
+
+        <div className="form-group stock-form-group">
+          <label htmlFor="stock_minimo">Stock Mínimo (Alerta)</label>
+          <div className="custom-number-input">
+            <button 
+              type="button" 
+              className="qty-btn minus" 
+              onClick={() => adjustStockMinimo(-1)}
+              disabled={loading || formData.stock_minimo <= 0}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+            <input 
+              type="number" 
+              id="stock_minimo" 
+              name="stock_minimo" 
+              value={formData.stock_minimo} 
+              onChange={handleChange} 
+              min="0" 
+              required 
+              disabled={loading}
+              className="qty-input"
+              title="Cuándo debe notificar"
+            />
+            <button 
+              type="button" 
+              className="qty-btn plus" 
+              onClick={() => adjustStockMinimo(1)}
+              disabled={loading}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            </button>
+          </div>
         </div>
 
         <div className="form-group stock-form-group">

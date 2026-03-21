@@ -54,10 +54,10 @@ function AppShell() {
     const handleInventoryChange = () => fetchProducts(true);
     window.addEventListener('inventory-changed', handleInventoryChange);
     
-    // Polling remoto (3s) para otros usuarios
+    // Polling remoto (1s) para otros usuarios
     const intervalId = setInterval(() => {
       fetchProducts(true);
-    }, 3000);
+    }, 1000);
 
     return () => {
       window.removeEventListener('inventory-changed', handleInventoryChange);

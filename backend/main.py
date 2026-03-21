@@ -297,7 +297,7 @@ def update_product_stock(
     if new_stock == 0 and request.cantidad < 0:
         log_movement(current_user, "ALERTA", f"El producto {p['nombre']} se ha agotado.")
     elif new_stock <= p.get("stock_minimo", 5) and request.cantidad < 0:
-        log_movement(current_user, "ALERTA", f"Stock bajo para {p['nombre']}: quedan {new_stock} unidades (Mín: {p.get('stock_minimo', 5)}).")
+        log_movement(current_user, "ALERTA", f"Stock bajo para {p['nombre']}: quedan {new_stock} unidades.")
 
     updated = col_products.find_one({"id": product_id})
     return clean(updated)
