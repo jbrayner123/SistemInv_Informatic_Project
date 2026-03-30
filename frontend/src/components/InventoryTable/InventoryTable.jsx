@@ -7,6 +7,8 @@ import ConfirmModal from '../ConfirmModal/ConfirmModal';
 import ProductDetailModal from '../ProductDetailModal/ProductDetailModal';
 import ManualAdjustModal from '../ManualAdjustModal/ManualAdjustModal';
 import { saveAs } from 'file-saver';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin' }) => {
   const { addToast } = useToast();
@@ -286,9 +288,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
 
     try {
       addToast('Preparando documento PDF...', 'info');
-      // Importación dinámica para code splitting
-      const { jsPDF } = await import('jspdf');
-      await import('jspdf-autotable'); 
+      // Importación estática definida arriba para evitar error doc.autoTable is not a function 
       
       const doc = new jsPDF();
       
