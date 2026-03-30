@@ -17,6 +17,11 @@ const Navbar = ({ toggleDarkMode, isDarkMode, username, rol, onLogout, onOpenAdm
       <div className="navbar-container">
         <div className="navbar-logo">
           <h2>SistemInv</h2>
+          <div className="user-info-mobile">
+            <span className={`role-badge ${rol === 'admin' ? 'role-admin' : 'role-empleado'}`}>
+              {rol === 'admin' ? 'Administrador' : 'Empleado'}
+            </span>
+          </div>
         </div>
 
         <div className="navbar-actions">

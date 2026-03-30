@@ -18,10 +18,22 @@
   gap: 1rem;
 }
 
+.navbar-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
 .navbar-logo h2 {
   margin: 0;
   font-size: 1.5rem;
   color: var(--primary);
+  line-height: 1.1;
+}
+
+.user-info-mobile {
+  display: none;
 }
 
 .navbar-actions {
@@ -106,8 +118,9 @@
 }
 
 /* ─── Responsive ─── */
-@media (max-width: 640px) {
-  .user-name { display: none; }
+@media (max-width: 768px) {
+  .user-info { display: none; }
+  .user-info-mobile { display: block; }
   .navbar-actions { gap: 0.5rem; }
 }
 
