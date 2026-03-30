@@ -278,18 +278,107 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
     }
   };
 
+  const exportToPDF = async () => {
+    if (!products || products.length === 0) {
+      addToast('No hay productos para exportar.', 'error');
+      return;
+    }
+
+    try {
+      addToast('Preparando documento PDF...', 'info');
+      // Importación dinámica para code splitting
+      const { jsPDF } = await import('jspdf');
+      await import('jspdf-autotable'); 
+      
+      const doc = new jsPDF();
+      
+      // Título
+      doc.setFontSize(18);
+      doc.text('Reporte de Inventario', 14, 22);
+      
+      // Fecha
+      doc.setFontSize(11);
+      doc.setTextColor(100);
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('es-ES').replace(/\//g, '-');
+      const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }).replace(/:/g, '');
+      doc.text(`Generado el: ${now.toLocaleDateString('es-ES')} a las ${now.toLocaleTimeString('es-ES')}`, 14, 30);
+      
+      // Tabla
+      const tableColumn = ["ID (SKU)", "NOMBRE", "CATEGORÍA", "STOCK", "ESTADO"];
+      const tableRows = [];
+
+      sortedProducts.forEach(p => {
+        const threshold = p.stock_minimo !== undefined ? p.stock_minimo : 5;
+        let estado = 'ÓPTIMO';
+        if (p.cantidad === 0) estado = 'AGOTADO';
+        else if (p.cantidad <= threshold) estado = 'ALERTA / BAJO';
+
+        const rowData = [
+          p.id,
+          p.nombre.length > 30 ? p.nombre.substring(0, 30) + '...' : p.nombre,
+          p.categoria,
+          `${p.cantidad} ${p.unidad_medida}`,
+          estado
+        ];
+        tableRows.push(rowData);
+      });
+
+      doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 40,
+        theme: 'striped',
+        headStyles: { fillColor: [16, 185, 129] }, // Verde premium
+        styles: { fontSize: 9 },
+        didParseCell: function(data) {
+          if (data.section === 'body' && data.column.index === 4) {
+            if (data.cell.raw === 'AGOTADO') {
+              data.cell.styles.textColor = [239, 68, 68];
+              data.cell.styles.fontStyle = 'bold';
+            } else if (data.cell.raw === 'ALERTA / BAJO') {
+              data.cell.styles.textColor = [245, 158, 11];
+              data.cell.styles.fontStyle = 'bold';
+            } else {
+              data.cell.styles.textColor = [16, 185, 129];
+              data.cell.styles.fontStyle = 'bold';
+            }
+          }
+        }
+      });
+
+      doc.save(`Inventario_SistemInv_${dateStr}_${timeStr}.pdf`);
+      
+      addToast('Inventario exportado a PDF exitosamente', 'success');
+    } catch (err) {
+      addToast('Error al generar PDF: ' + err.message, 'error');
+    }
+  };
+
   return (
     <div className="card inventory-card">
       <div className="table-header-premium">
-        <button 
-          onClick={exportToExcel}
-          className="btn-premium btn-export"
-          disabled={products.length === 0}
-          title="Descargar Inventario con diseño a Excel (.xlsx)"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-          Exportar Excel
-        </button>
+        <h3 style={{ margin: 0, color: 'var(--text-color)', fontSize: '1.25rem', fontWeight: 600 }}>Inventario Actual</h3>
+        <div className="export-actions">
+          <button 
+            onClick={exportToPDF}
+            className="btn-premium btn-export pdf"
+            disabled={products.length === 0}
+            title="Descargar Inventario a PDF"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            Exportar PDF
+          </button>
+          <button 
+            onClick={exportToExcel}
+            className="btn-premium btn-export excel"
+            disabled={products.length === 0}
+            title="Descargar Inventario a Excel (.xlsx)"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            Exportar Excel
+          </button>
+        </div>
       </div>
       
       <div className="table-container">
