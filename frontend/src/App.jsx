@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './components/Toast/ToastContext';
 import Navbar from './components/Navbar/Navbar';
@@ -6,6 +6,8 @@ import Login from './components/Login/Login';
 import ProductForm from './components/ProductForm/ProductForm';
 import InventoryTable from './components/InventoryTable/InventoryTable';
 import DashboardResumen from './components/DashboardResumen/DashboardResumen';
+import InventoryFilterBar from './components/InventoryFilterBar/InventoryFilterBar';
+import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import { api } from './api/api';
 import './App.css';
 
@@ -19,6 +21,40 @@ function AppShell() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
+
+  // ─── Filtros del InventoryFilterBar ──────────────────────────────────────
+  const [searchTerm, setSearchTerm] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('ALL');
+  const [statusFilter, setStatusFilter] = useState('ALL');
+
+  const uniqueCategories = useMemo(() => {
+    return [...new Set(products.map(p => p.categoria))].sort();
+  }, [products]);
+
+  const filteredProducts = useMemo(() => {
+    return products.filter(p => {
+      const term = searchTerm.toLowerCase();
+      const matchesSearch = !term || 
+        p.nombre.toLowerCase().includes(term) || 
+        p.id.toLowerCase().includes(term);
+
+      const matchesCategory = categoryFilter === 'ALL' || p.categoria === categoryFilter;
+
+      let matchesStatus = true;
+      if (statusFilter === 'OUT') {
+        matchesStatus = p.cantidad === 0;
+      } else if (statusFilter === 'LOW') {
+        const min = p.stock_minimo !== undefined ? p.stock_minimo : 5;
+        matchesStatus = p.cantidad > 0 && p.cantidad <= min;
+      } else if (statusFilter === 'OK') {
+        const min = p.stock_minimo !== undefined ? p.stock_minimo : 5;
+        matchesStatus = p.cantidad > min;
+      }
+
+      return matchesSearch && matchesCategory && matchesStatus;
+    });
+  }, [products, searchTerm, categoryFilter, statusFilter]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -50,11 +86,9 @@ function AppShell() {
     
     fetchProducts();
     
-    // Evento instantáneo local
     const handleInventoryChange = () => fetchProducts(true);
     window.addEventListener('inventory-changed', handleInventoryChange);
     
-    // Polling remoto (1s) para otros usuarios
     const intervalId = setInterval(() => {
       fetchProducts(true);
     }, 1000);
@@ -65,7 +99,6 @@ function AppShell() {
     };
   }, [session]);
 
-  // Sin sesión → solo renderizar Login
   if (!session) {
     return <Login />;
   }
@@ -80,6 +113,7 @@ function AppShell() {
         username={session.nombre_completo}
         rol={rol}
         onLogout={logout}
+        onOpenAdmin={() => setShowAdminPanel(true)}
       />
 
       <main className="main-content">
@@ -110,16 +144,27 @@ function AppShell() {
         </section>
 
         <div className="dashboard-grid">
-          {/* El formulario de creación solo es visible para admin */}
           {rol === 'admin' && (
             <section className="form-section">
               <ProductForm onProductAdded={fetchProducts} />
             </section>
           )}
 
+          <section className="filter-section">
+            <InventoryFilterBar
+              searchTerm={searchTerm}
+              onSearchChange={setSearchTerm}
+              categoryFilter={categoryFilter}
+              onCategoryChange={setCategoryFilter}
+              statusFilter={statusFilter}
+              onStatusChange={setStatusFilter}
+              categories={uniqueCategories}
+            />
+          </section>
+
           <section className="table-section">
             <InventoryTable
-              products={products}
+              products={filteredProducts}
               onStockUpdated={fetchProducts}
               loading={loading}
               error={error}
@@ -128,6 +173,11 @@ function AppShell() {
           </section>
         </div>
       </main>
+
+      {/* Panel de Administración — HU-25 */}
+      {showAdminPanel && (
+        <AdminDashboard onClose={() => setShowAdminPanel(false)} />
+      )}
     </div>
   );
 }

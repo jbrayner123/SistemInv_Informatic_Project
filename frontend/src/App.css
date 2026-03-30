@@ -82,8 +82,6 @@
   gap: 2rem;
 }
 
-/* For larger screens we can do a distinct layout if needed, but stacked is great for full width tables */
-
 @media (min-width: 1024px) {
   .dashboard-grid {
     gap: 2.5rem;

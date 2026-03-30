@@ -4,6 +4,8 @@ import { useToast } from '../Toast/ToastContext';
 import './InventoryTable.css';
 import EditProductModal from '../EditProductModal/EditProductModal';
 import ConfirmModal from '../ConfirmModal/ConfirmModal';
+import ProductDetailModal from '../ProductDetailModal/ProductDetailModal';
+import ManualAdjustModal from '../ManualAdjustModal/ManualAdjustModal';
 import { saveAs } from 'file-saver';
 
 const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin' }) => {
@@ -15,6 +17,8 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [editingProduct, setEditingProduct] = useState(null);
   const [productToDelete, setProductToDelete] = useState(null);
+  const [viewingProduct, setViewingProduct] = useState(null);
+  const [adjustingProduct, setAdjustingProduct] = useState(null);
   const itemsPerPage = 10;
 
   // Reset to first page when products array length changes significantly
@@ -391,6 +395,33 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
                           </button>
+                          <button
+                            className="btn-crud btn-view"
+                            onClick={() => setViewingProduct(product)}
+                            title="Ver Detalle"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
+                          <button
+                            className="btn-crud btn-adjust"
+                            onClick={() => setAdjustingProduct(product)}
+                            title="Ajuste Manual de Stock"
+                            disabled={submittingIds.has(product.id)}
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+                          </button>
+                        </div>
+                      )}
+                      {/* Botón ver detalle para empleados */}
+                      {rol !== 'admin' && (
+                        <div className="crud-actions-group">
+                          <button
+                            className="btn-crud btn-view"
+                            onClick={() => setViewingProduct(product)}
+                            title="Ver Detalle"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          </button>
                         </div>
                       )}
                     </div>
@@ -451,6 +482,18 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
         confirmText="Sí, eliminar"
         onConfirm={confirmDelete}
         onCancel={() => setProductToDelete(null)}
+      />
+      <ProductDetailModal
+        isOpen={!!viewingProduct}
+        product={viewingProduct}
+        onClose={() => setViewingProduct(null)}
+      />
+
+      <ManualAdjustModal
+        isOpen={!!adjustingProduct}
+        product={adjustingProduct}
+        onClose={() => setAdjustingProduct(null)}
+        onAdjusted={onStockUpdated}
       />
     </div>
   );
