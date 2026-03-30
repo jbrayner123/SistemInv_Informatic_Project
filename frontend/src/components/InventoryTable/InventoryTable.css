@@ -9,7 +9,7 @@
 .inventory-card h3 {
   margin-top: 0;
   margin-bottom: 0;
-  color: var(--text-color);
+  color: var(--primary);
   font-size: 1.25rem;
   font-weight: 600;
 }
