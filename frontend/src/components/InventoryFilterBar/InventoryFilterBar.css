@@ -54,11 +54,14 @@
 
 .accordion-inner {
   overflow: hidden;
+  width: 100%;
+}
+
+.filter-inner {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 1.5rem;
-  width: 100%;
 }
 
 .accordion-content.expanded .accordion-inner {
