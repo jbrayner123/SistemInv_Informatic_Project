@@ -439,11 +439,12 @@
     min-width: unset; /* Permitimos que se comprima si es necesario */
   }
 
-  /* Apilar botones de CRUD y Stock ordenadamente */
+  /* Apilar botones de CRUD y Stock ordenadamente centrados */
   .actions-container {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
   }
 }
