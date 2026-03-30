@@ -5,7 +5,15 @@ const ConfirmModal = ({ isOpen, title, message, onConfirm, onCancel, confirmText
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay">
+    <div 
+      className="modal-overlay" 
+      onClick={(e) => {
+        e.stopPropagation();
+        if (e.target === e.currentTarget && onCancel) {
+          onCancel();
+        }
+      }}
+    >
       <div className="modal-content card confirm-modal">
         <h3 className="confirm-title">{title}</h3>
         <p className="confirm-message">{message}</p>
