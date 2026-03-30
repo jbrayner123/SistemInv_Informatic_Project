@@ -1,15 +1,15 @@
 name: Master/Main CI Pipeline
 
 on:
-  push:
-    branches: [ "main", "master" ]
-  pull_request:
-    branches: [ "main", "master" ]
+  pull_request_review:
+    types: [submitted]
+  workflow_dispatch: # Permite ejecución manual por si acaso
 
 jobs:
   backend-test:
     name: Backend CI (FastAPI)
     runs-on: ubuntu-latest
+    if: github.event.review.state == 'approved' || github.event_name == 'workflow_dispatch'
     steps:
     - uses: actions/checkout@v4
     
@@ -39,6 +39,7 @@ jobs:
   frontend-test:
     name: Frontend CI (React+Vite)
     runs-on: ubuntu-latest
+    if: github.event.review.state == 'approved' || github.event_name == 'workflow_dispatch'
     steps:
     - uses: actions/checkout@v4
     
