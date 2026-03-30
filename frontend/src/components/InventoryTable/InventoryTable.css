@@ -260,6 +260,20 @@
   transform: translateY(-1px);
 }
 
+.btn-crud.btn-view:hover:not(:disabled) {
+  color: #6366f1;
+  background-color: rgba(99, 102, 241, 0.1);
+  border-color: rgba(99, 102, 241, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-crud.btn-adjust:hover:not(:disabled) {
+  color: #f59e0b;
+  background-color: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.2);
+  transform: translateY(-1px);
+}
+
 .local-error {
   position: absolute;
   top: 100%;

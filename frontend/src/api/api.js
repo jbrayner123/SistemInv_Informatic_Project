@@ -108,6 +108,36 @@ export const api = {
     return response.json();
   },
 
+  // HU-07: Consulta individual
+  getProduct: async (productId) => {
+    const token = getStoredToken();
+    const response = await fetch(`${API_URL}/api/products/${productId}?_t=${Date.now()}`, {
+      headers: getAuthHeaders(token),
+      cache: 'no-store',
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `Error ${response.status}`);
+    }
+    return response.json();
+  },
+
+  // HU-11: Ajuste manual absoluto (admin only)
+  adjustStock: async (productId, cantidad_nueva) => {
+    const token = getStoredToken();
+    const response = await fetch(`${API_URL}/api/products/${productId}/ajuste`, {
+      method: 'PUT',
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ cantidad_nueva }),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `Error ${response.status}`);
+    }
+    window.dispatchEvent(new Event('inventory-changed'));
+    return response.json();
+  },
+
   getHistory: async () => {
     const token = getStoredToken();
     const response = await fetch(`${API_URL}/api/history?_t=${Date.now()}`, {
@@ -133,6 +163,72 @@ export const api = {
       if (response.status === 401) throw new Error('SESIÓN EXPIRADA');
       const err = await response.json();
       throw new Error(err.detail || `Error al limpiar historial`);
+    }
+    return response.json();
+  },
+
+  // ─── HU-25: User Management ────────────────────────────────────
+  getUsers: async () => {
+    const token = getStoredToken();
+    const response = await fetch(`${API_URL}/api/users`, {
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `Error ${response.status}`);
+    }
+    return response.json();
+  },
+
+  createUser: async (userData) => {
+    const token = getStoredToken();
+    const response = await fetch(`${API_URL}/api/users`, {
+      method: 'POST',
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(userData),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `Error ${response.status}`);
+    }
+    return response.json();
+  },
+
+  updateUser: async (username, data) => {
+    const token = getStoredToken();
+    const response = await fetch(`${API_URL}/api/users/${username}`, {
+      method: 'PUT',
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `Error ${response.status}`);
+    }
+    return response.json();
+  },
+
+  deleteUser: async (username) => {
+    const token = getStoredToken();
+    const response = await fetch(`${API_URL}/api/users/${username}`, {
+      method: 'DELETE',
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `Error ${response.status}`);
+    }
+    return response.json();
+  },
+
+  getMovementStats: async () => {
+    const token = getStoredToken();
+    const response = await fetch(`${API_URL}/api/stats/movements`, {
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `Error ${response.status}`);
     }
     return response.json();
   }
