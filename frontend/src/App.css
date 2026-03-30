@@ -68,11 +68,23 @@
   margin: 0;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .header-brand {
     flex-direction: column;
     text-align: center;
     gap: 1rem;
+  }
+  
+  .main-content {
+    padding: 1rem 0.5rem;
+  }
+  
+  .premium-header {
+    padding: 1.25rem 1rem;
+  }
+  
+  .header-text h1 {
+    font-size: 1.8rem;
   }
 }
 

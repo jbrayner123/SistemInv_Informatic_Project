@@ -266,15 +266,36 @@
 /* ─── Responsive ──────────────────────────── */
 @media (max-width: 768px) {
   .admin-overlay {
-    padding: 0.5rem;
+    padding: 0;
+  }
+
+  .admin-panel {
+    border-radius: 0;
+    min-height: 100vh;
+    border: none;
+  }
+
+  .admin-header {
+    padding: 1rem 1.25rem;
   }
 
   .admin-body {
-    padding: 1rem;
+    padding: 1rem 0.75rem;
+    gap: 1.5rem;
+  }
+
+  .admin-section h3 {
+    font-size: 1.05rem;
+    margin-bottom: 1rem;
   }
 
   .charts-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .chart-card {
+    padding: 1rem;
   }
 
   .user-form .form-row {
@@ -283,13 +304,33 @@
 
   .stats-summary {
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.75rem;
+    padding: 1rem;
   }
 
   .section-header {
     flex-direction: column;
     gap: 0.75rem;
     align-items: stretch;
+  }
+
+  .section-header .btn-save {
+    justify-content: center;
+  }
+  
+  .user-modal {
+    padding: 1.25rem 1rem;
+    width: 95%;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions button {
+    width: 100%;
+    justify-content: center;
+    padding: 0.8rem;
   }
 }
 

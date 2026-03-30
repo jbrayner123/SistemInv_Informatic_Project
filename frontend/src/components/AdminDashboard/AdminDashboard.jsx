@@ -15,7 +15,7 @@ const TOOLTIP_STYLE = {
   background: 'var(--card-bg)',
   border: '1px solid var(--border-color)',
   borderRadius: '8px',
-  color: '#ffffff'
+  color: 'var(--text-color)'
 };
 
 const AdminDashboard = ({ onClose }) => {
@@ -214,7 +214,7 @@ const AdminDashboard = ({ onClose }) => {
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
                       <XAxis dataKey="name" tick={{ fill: 'var(--muted-text)', fontSize: 12 }} />
                       <YAxis tick={{ fill: 'var(--muted-text)', fontSize: 12 }} />
-                      <Tooltip contentStyle={TOOLTIP_STYLE} itemStyle={{ color: '#ffffff' }} labelStyle={{ color: '#ffffff' }} />
+                      <Tooltip contentStyle={TOOLTIP_STYLE} itemStyle={{ color: 'var(--text-color)' }} labelStyle={{ color: 'var(--text-color)' }} />
                       <Bar dataKey="total" radius={[4, 4, 0, 0]}>
                         {stats.by_user.map((_, i) => (
                           <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
@@ -232,7 +232,7 @@ const AdminDashboard = ({ onClose }) => {
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
                       <XAxis type="number" tick={{ fill: 'var(--muted-text)', fontSize: 12 }} />
                       <YAxis dataKey="name" type="category" tick={{ fill: 'var(--muted-text)', fontSize: 12 }} width={70} />
-                      <Tooltip contentStyle={TOOLTIP_STYLE} itemStyle={{ color: '#ffffff' }} labelStyle={{ color: '#ffffff' }} />
+                      <Tooltip contentStyle={TOOLTIP_STYLE} itemStyle={{ color: 'var(--text-color)' }} labelStyle={{ color: 'var(--text-color)' }} />
                       <Bar dataKey="total" radius={[0, 4, 4, 0]}>
                         {stats.by_type.map((_, i) => (
                           <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
@@ -256,7 +256,7 @@ const AdminDashboard = ({ onClose }) => {
                       <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
                       <XAxis dataKey="date" tick={{ fill: 'var(--muted-text)', fontSize: 11 }} />
                       <YAxis tick={{ fill: 'var(--muted-text)', fontSize: 12 }} />
-                      <Tooltip contentStyle={TOOLTIP_STYLE} itemStyle={{ color: '#ffffff' }} labelStyle={{ color: '#ffffff' }} />
+                      <Tooltip contentStyle={TOOLTIP_STYLE} itemStyle={{ color: 'var(--text-color)' }} labelStyle={{ color: 'var(--text-color)' }} />
                       <Area type="monotone" dataKey="total" stroke="#6366f1" strokeWidth={2} fill="url(#areaGradient)" />
                     </AreaChart>
                   </ResponsiveContainer>
