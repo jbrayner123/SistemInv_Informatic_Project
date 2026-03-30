@@ -146,6 +146,10 @@ class UpdateStockRequest(BaseModel):
     cantidad: int = Field(description="Cantidad a sumar o restar (puede ser negativa)")
 
 
+class ManualAdjustRequest(BaseModel):
+    cantidad_nueva: int = Field(ge=0, description="Nueva cantidad absoluta del inventario")
+
+
 class LoginRequest(BaseModel):
     username: str
     password: str
@@ -156,6 +160,20 @@ class LoginResponse(BaseModel):
     rol: str
     username: str
     nombre_completo: str
+
+
+# ─── User Management Models (HU-25) ──────────────────
+class UserCreate(BaseModel):
+    username: str
+    password: str
+    rol: str = Field(default="empleado", pattern="^(admin|empleado)$")
+    nombre_completo: str
+
+
+class UserUpdate(BaseModel):
+    password: Optional[str] = None
+    nombre_completo: Optional[str] = None
+    rol: Optional[str] = Field(default=None, pattern="^(admin|empleado)$")
 
 
 # ─────────────────────────────────────────────
@@ -265,6 +283,15 @@ def list_products(current_user: dict = Depends(get_current_user)):
     return products
 
 
+@app.get("/api/products/{product_id}", response_model=Product)
+def get_product(product_id: str, current_user: dict = Depends(get_current_user)):
+    """HU-07: Consulta individual de producto. Accesible para ambos roles."""
+    p = col_products.find_one({"id": product_id})
+    if not p:
+        raise HTTPException(status_code=404, detail="Producto no encontrado.")
+    return clean(p)
+
+
 @app.post("/products", response_model=Product, status_code=201)
 def create_product(product: Product, current_user: dict = Depends(require_admin)):
     if col_products.find_one({"id": product.id}):
@@ -345,6 +372,39 @@ def delete_product(product_id: str, current_user: dict = Depends(require_admin))
     return {"message": "Producto eliminado exitosamente.", "id": product_id}
 
 
+@app.put("/api/products/{product_id}/ajuste", response_model=Product)
+def manual_adjust_stock(
+    product_id: str,
+    request: ManualAdjustRequest,
+    current_user: dict = Depends(require_admin)
+):
+    """HU-11: Ajuste manual absoluto de stock. Solo admin."""
+    p = col_products.find_one({"id": product_id})
+    if not p:
+        raise HTTPException(status_code=404, detail="Producto no encontrado.")
+
+    old_stock = p["cantidad"]
+    new_stock = request.cantidad_nueva
+
+    col_products.update_one({"id": product_id}, {"$set": {"cantidad": new_stock}})
+
+    log_movement(
+        current_user,
+        "AJUSTE",
+        f"Ajuste manual de {p['nombre']}: {old_stock} → {new_stock} unidades"
+    )
+
+    # Alertas de stock
+    threshold = p.get("stock_minimo", 5)
+    if new_stock == 0:
+        log_movement(current_user, "ALERTA", f"El producto {p['nombre']} se ha agotado.")
+    elif new_stock <= threshold and old_stock > threshold:
+        log_movement(current_user, "ALERTA", f"Stock bajo para {p['nombre']}: quedan {new_stock} unidades.")
+
+    updated = col_products.find_one({"id": product_id})
+    return clean(updated)
+
+
 # ─────────────────────────────────────────────
 # History Endpoints
 # ─────────────────────────────────────────────
@@ -367,3 +427,121 @@ def clear_history(current_user: dict = Depends(get_current_user)):
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Usuario no encontrado")
     return {"message": "Historial limpiado"}
+
+
+# ─────────────────────────────────────────────
+# User Management Endpoints (HU-25)
+# ─────────────────────────────────────────────
+@app.get("/api/users")
+def list_users(current_user: dict = Depends(require_admin)):
+    """Lista todos los usuarios (sin contraseñas)."""
+    users = []
+    for u in col_users.find({}):
+        users.append({
+            "username": u["username"],
+            "rol": u["rol"],
+            "nombre_completo": u.get("nombre_completo", u["username"])
+        })
+    return users
+
+
+@app.post("/api/users", status_code=201)
+def create_user(user: UserCreate, current_user: dict = Depends(require_admin)):
+    """Crea un nuevo usuario."""
+    if col_users.find_one({"username": user.username}):
+        raise HTTPException(status_code=400, detail="Ya existe un usuario con ese nombre.")
+    col_users.insert_one(user.model_dump())
+    log_movement(current_user, "GESTIÓN", f"Creó el usuario '{user.nombre_completo}' ({user.rol})")
+    return {"message": "Usuario creado exitosamente.", "username": user.username}
+
+
+@app.put("/api/users/{username}")
+def update_user(username: str, data: UserUpdate, current_user: dict = Depends(require_admin)):
+    """Actualiza datos de un usuario existente."""
+    u = col_users.find_one({"username": username})
+    if not u:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+
+    update_fields = {}
+    cambios = []
+    if data.password is not None:
+        update_fields["password"] = data.password
+        cambios.append("contraseña")
+    if data.nombre_completo is not None:
+        update_fields["nombre_completo"] = data.nombre_completo
+        cambios.append(f"nombre ('{u.get('nombre_completo', '')}' → '{data.nombre_completo}')")
+    if data.rol is not None:
+        update_fields["rol"] = data.rol
+        cambios.append(f"rol ('{u['rol']}' → '{data.rol}')")
+
+    if not update_fields:
+        raise HTTPException(status_code=400, detail="No se proporcionaron campos para actualizar.")
+
+    col_users.update_one({"username": username}, {"$set": update_fields})
+    log_movement(current_user, "GESTIÓN", f"Modificó al usuario '{username}': " + ", ".join(cambios))
+    return {"message": "Usuario actualizado.", "username": username}
+
+
+@app.delete("/api/users/{username}")
+def delete_user(username: str, current_user: dict = Depends(require_admin)):
+    """Elimina un usuario. No permite eliminar administradores."""
+    u = col_users.find_one({"username": username})
+    if not u:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado.")
+    if u.get("rol") == "admin":
+        raise HTTPException(status_code=403, detail="No se puede eliminar una cuenta de administrador.")
+    nombre = u.get("nombre_completo", username)
+    col_users.delete_one({"username": username})
+    log_movement(current_user, "GESTIÓN", f"Eliminó al usuario '{nombre}'")
+    return {"message": "Usuario eliminado.", "username": username}
+
+
+# ─────────────────────────────────────────────
+# Movement Analytics Endpoint (HU-25)
+# ─────────────────────────────────────────────
+@app.get("/api/stats/movements")
+def get_movement_stats(current_user: dict = Depends(require_admin)):
+    """Devuelve datos agregados de movimientos para gráficas."""
+    movements = list(col_movements.find({}))
+
+    # Acciones por usuario
+    by_user = {}
+    # Acciones por tipo
+    by_type = {}
+    # Actividad por día (últimos 30 días)
+    by_date = {}
+
+    for m in movements:
+        usuario = m.get("usuario", "Desconocido")
+        accion = m.get("accion", "OTRO")
+        fecha_str = m.get("fecha", "")
+
+        # Por usuario
+        if usuario not in by_user:
+            by_user[usuario] = 0
+        by_user[usuario] += 1
+
+        # Por tipo de acción
+        if accion not in by_type:
+            by_type[accion] = 0
+        by_type[accion] += 1
+
+        # Por fecha (solo día)
+        if fecha_str:
+            day = fecha_str[:10]  # YYYY-MM-DD
+            if day not in by_date:
+                by_date[day] = 0
+            by_date[day] += 1
+
+    # Formatear para gráficas
+    chart_by_user = [{"name": k, "total": v} for k, v in sorted(by_user.items(), key=lambda x: -x[1])]
+    chart_by_type = [{"name": k, "total": v} for k, v in sorted(by_type.items(), key=lambda x: -x[1])]
+    chart_by_date = [{"date": k, "total": v} for k, v in sorted(by_date.items())[-30:]
+    ]
+
+    return {
+        "by_user": chart_by_user,
+        "by_type": chart_by_type,
+        "by_date": chart_by_date,
+        "total_movements": len(movements)
+    }
