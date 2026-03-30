@@ -324,7 +324,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
         tableRows.push(rowData);
       });
 
-      doc.autoTable({
+      autoTable(doc, {
         head: [tableColumn],
         body: tableRows,
         startY: 40,
