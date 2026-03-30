@@ -358,7 +358,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
   return (
     <div className="card inventory-card">
       <div className="table-header-premium">
-        <h3 style={{ margin: 0, color: 'var(--text-color)', fontSize: '1.25rem', fontWeight: 600 }}>Inventario Actual</h3>
+        <h3 style={{ margin: 0, color: 'var(--primary)', fontSize: '1.25rem', fontWeight: 600 }}>Inventario Actual</h3>
         <div className="export-actions">
           <button 
             onClick={exportToPDF}
