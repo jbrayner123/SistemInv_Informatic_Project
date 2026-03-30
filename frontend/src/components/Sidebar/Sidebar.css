@@ -1,0 +1,179 @@
+/* ─── Sidebar ─────────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  height: 100vh;
+  background: var(--card-bg);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 12px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-collapsed {
+  transform: translateX(-100%);
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-text);
+}
+
+.sidebar-close-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--muted-text);
+  cursor: pointer;
+  padding: 0.3rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-close-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+/* ─── Nav Links ─────────────────────────────────────── */
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow-y: auto;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  background: none;
+  color: var(--text-color);
+  font-size: 0.925rem;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar-link:hover {
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--primary);
+}
+
+.sidebar-link-active {
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.sidebar-link-active .sidebar-link-icon {
+  color: var(--primary);
+}
+
+.sidebar-link-icon {
+  display: flex;
+  align-items: center;
+  color: var(--muted-text);
+  transition: color 0.15s ease;
+}
+
+.sidebar-link-label {
+  white-space: nowrap;
+}
+
+/* ─── Footer ─────────────────────────────────────────── */
+.sidebar-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.sidebar-version {
+  font-size: 0.75rem;
+  color: var(--muted-text);
+  opacity: 0.6;
+}
+
+/* ─── Hamburger Button ───────────────────────────────── */
+.sidebar-hamburger {
+  display: none;
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 150;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+.sidebar-hamburger:hover {
+  background: var(--bg-color);
+}
+
+/* ─── Overlay ──────────────────────────────────────── */
+.sidebar-overlay {
+  display: none;
+}
+
+/* ─── Desktop: sidebar always visible ──────────────── */
+@media (min-width: 1025px) {
+  .sidebar {
+    transform: translateX(0) !important;
+  }
+  .sidebar-hamburger {
+    display: none !important;
+  }
+}
+
+/* ─── Tablet + Mobile: collapsible ─────────────────── */
+@media (max-width: 1024px) {
+  .sidebar-hamburger {
+    display: flex;
+    align-items: center;
+  }
+
+  .sidebar-close-btn {
+    display: flex;
+    align-items: center;
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 99;
+    animation: fadeIn 0.2s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
