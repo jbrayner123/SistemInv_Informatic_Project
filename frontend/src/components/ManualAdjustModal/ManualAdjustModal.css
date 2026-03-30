@@ -1,0 +1,127 @@
+.adjust-modal {
+  max-width: 480px;
+  width: 90%;
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.adjust-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: 8px;
+  color: #d97706;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  margin-bottom: 1.25rem;
+}
+
+.adjust-warning svg {
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.adjust-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.adjust-comparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+}
+
+.adjust-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.adjust-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-text);
+}
+
+.adjust-current {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-color);
+  opacity: 0.5;
+}
+
+.adjust-arrow {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--muted-text);
+}
+
+.adjust-input {
+  width: 90px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 800;
+  padding: 0.5rem;
+  border: 2px solid var(--primary);
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--text-color);
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.adjust-input:focus {
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.adjust-diff {
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.diff-positive {
+  color: #10b981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.diff-negative {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.diff-zero {
+  color: var(--muted-text);
+  background: rgba(128, 128, 128, 0.1);
+}
+
+@media (max-width: 480px) {
+  .adjust-comparison {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .adjust-arrow {
+    transform: rotate(90deg);
+  }
+}
