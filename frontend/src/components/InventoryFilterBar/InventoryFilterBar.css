@@ -1,14 +1,68 @@
 .filter-bar-container {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  padding: 1.5rem;
+  flex-direction: column;
+  padding: 1rem 1.5rem;
   background-color: var(--card-bg);
   border: 1px solid var(--border-color);
   border-radius: 12px;
   margin-bottom: 1.5rem;
-  align-items: flex-end;
   box-shadow: 0 4px 6px -1px var(--shadow-sm);
+}
+
+/* Accordion Styles */
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  width: 100%;
+}
+
+.accordion-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.accordion-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-text);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.accordion-icon.expanded {
+  transform: rotate(-180deg);
+  color: var(--primary);
+}
+
+.accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+}
+
+.accordion-content.expanded {
+  grid-template-rows: 1fr;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.accordion-inner {
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.accordion-content.expanded .accordion-inner {
+  padding-top: 1.5rem;
 }
 
 .filter-group {

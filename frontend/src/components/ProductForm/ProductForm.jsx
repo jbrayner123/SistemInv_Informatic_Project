@@ -47,6 +47,8 @@ const ProductForm = ({ onProductAdded }) => {
     }));
   };
 
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -63,6 +65,7 @@ const ProductForm = ({ onProductAdded }) => {
       await api.createProduct(formData);
       addToast(`¡Producto ${formData.nombre} (${formData.id}) registrado exitosamente!`, 'success');
       setFormData({ id: '', nombre: '', categoria: '', unidad_medida: '', cantidad: 1, stock_minimo: 5 });
+      setIsExpanded(false); // Cierra el acordeón al guardar
       if (onProductAdded) {
         onProductAdded();
       }
@@ -76,9 +79,19 @@ const ProductForm = ({ onProductAdded }) => {
 
   return (
     <div className="card product-form-card">
-      <h3>Registrar Producto</h3>
+      <div 
+        className="accordion-header" 
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <h3 style={{ margin: 0 }}>Registrar Producto</h3>
+        <div className={`accordion-icon ${isExpanded ? 'expanded' : ''}`}>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+      </div>
       
-      {error && <div className="alert error">{error}</div>}
+      <div className={`accordion-content ${isExpanded ? 'expanded' : ''}`}>
+        <div className="accordion-inner">
+          {error && <div className="alert error">{error}</div>}
 
       <form onSubmit={handleSubmit} className="product-form">
         <div className="form-group">
@@ -192,10 +205,12 @@ const ProductForm = ({ onProductAdded }) => {
           </div>
         </div>
 
-        <button type="submit" className="btn-primary" disabled={loading}>
-          {loading ? 'Guardando...' : 'Registrar Producto'}
-        </button>
-      </form>
+          <button type="submit" className="btn-primary" disabled={loading}>
+            {loading ? 'Guardando...' : 'Registrar Producto'}
+          </button>
+        </form>
+        </div>
+      </div>
     </div>
   );
 };
