@@ -288,7 +288,8 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
       addToast('Preparando documento PDF...', 'info');
       // Importación dinámica para code splitting
       const { jsPDF } = await import('jspdf');
-      await import('jspdf-autotable'); 
+      const autoTableModule = await import('jspdf-autotable'); 
+      const autoTable = autoTableModule.default || autoTableModule;
       
       const doc = new jsPDF();
       
@@ -324,7 +325,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
         tableRows.push(rowData);
       });
 
-      doc.autoTable({
+      autoTable(doc, {
         head: [tableColumn],
         body: tableRows,
         startY: 40,
