@@ -9,10 +9,52 @@
 
 .product-form-card h3 {
   margin-top: 0;
-  margin-bottom: 1.5rem;
   color: var(--primary);
-  border-bottom: 2px solid var(--border-color);
-  padding-bottom: 0.5rem;
+  /* removido border-bottom y margin-bottom del h3 para pasarlos al header del acordeón si está abierto */
+}
+
+/* Accordion Styles */
+.accordion-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 2px solid transparent;
+  transition: padding-bottom 0.3s, border-color 0.3s;
+}
+
+.accordion-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted-text);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.accordion-icon.expanded {
+  transform: rotate(-180deg);
+  color: var(--primary);
+}
+
+.accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.accordion-content.expanded {
+  grid-template-rows: 1fr;
+  border-top: 2px solid var(--border-color);
+  margin-top: 0.75rem;
+}
+
+.accordion-inner {
+  overflow: hidden;
+}
+
+.accordion-content.expanded .accordion-inner {
+  padding-top: 1.5rem;
 }
 
 .product-form {
