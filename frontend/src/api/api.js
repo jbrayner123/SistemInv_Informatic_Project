@@ -6,14 +6,30 @@ const getAuthHeaders = (token) => ({
   ...(token ? { 'Authorization': token } : {}),
 });
 
-/** Recupera el token de sesión almacenado en sessionStorage. */
+/** Recupera el token de sesión almacenado en localStorage. */
 const getStoredToken = () => {
   try {
-    const stored = sessionStorage.getItem('sisteminv_session');
+    const stored = localStorage.getItem('sisteminv_session');
     return stored ? JSON.parse(stored).token : null;
   } catch {
     return null;
   }
+};
+
+/** Maneja las respuestas globales para detectar expiración de sesión (401). */
+const handleResponse = async (response) => {
+  if (response.status === 401) {
+    // Disparamos un evento global para que AuthContext lo capture y haga logout
+    window.dispatchEvent(new CustomEvent('unauthorized-api-call'));
+    throw new Error('SESIÓN EXPIRADA');
+  }
+  return response;
+};
+
+/** Wrapper sobre fetch que maneja errores globales. */
+const secureFetch = async (url, options) => {
+  const response = await fetch(url, options);
+  return handleResponse(response);
 };
 
 export const api = {
@@ -32,16 +48,43 @@ export const api = {
   },
 
   logout: async (token) => {
-    await fetch(`${API_URL}/api/logout`, {
+    await secureFetch(`${API_URL}/api/logout`, {
       method: 'POST',
       headers: { 'Authorization': token },
     });
   },
 
+  forgotPassword: async (username) => {
+    const response = await secureFetch(`${API_URL}/api/auth/forgot-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username }),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || 'Error al solicitar PIN.');
+    }
+    return response.json();
+  },
+
+  resetPassword: async (payload) => {
+    const response = await secureFetch(`${API_URL}/api/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || 'Error al restablecer contraseña.');
+    }
+    return response.json();
+  },
+
   // ─── Products ────────────────────────────────────────────────────
+
   getProducts: async () => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/products?_t=${Date.now()}`, {
+    const response = await secureFetch(`${API_URL}/products?_t=${Date.now()}`, {
       headers: getAuthHeaders(token),
       cache: 'no-store',
     });
@@ -51,7 +94,7 @@ export const api = {
 
   createProduct: async (product) => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/products`, {
+    const response = await secureFetch(`${API_URL}/products`, {
       method: 'POST',
       headers: getAuthHeaders(token),
       body: JSON.stringify(product),
@@ -66,7 +109,7 @@ export const api = {
 
   updateStock: async (productId, amount) => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/products/${productId}/update_stock`, {
+    const response = await secureFetch(`${API_URL}/products/${productId}/update_stock`, {
       method: 'PUT',
       headers: getAuthHeaders(token),
       body: JSON.stringify({ cantidad: amount }),
@@ -81,7 +124,7 @@ export const api = {
 
   updateProduct: async (productId, data) => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/products/${productId}`, {
+    const response = await secureFetch(`${API_URL}/products/${productId}`, {
       method: 'PUT',
       headers: getAuthHeaders(token),
       body: JSON.stringify(data),
@@ -96,7 +139,7 @@ export const api = {
 
   deleteProduct: async (productId) => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/products/${productId}`, {
+    const response = await secureFetch(`${API_URL}/products/${productId}`, {
       method: 'DELETE',
       headers: getAuthHeaders(token),
     });
@@ -111,7 +154,7 @@ export const api = {
   // HU-07: Consulta individual
   getProduct: async (productId) => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/api/products/${productId}?_t=${Date.now()}`, {
+    const response = await secureFetch(`${API_URL}/api/products/${productId}?_t=${Date.now()}`, {
       headers: getAuthHeaders(token),
       cache: 'no-store',
     });
@@ -125,7 +168,7 @@ export const api = {
   // HU-11: Ajuste manual absoluto (admin only)
   adjustStock: async (productId, cantidad_nueva) => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/api/products/${productId}/ajuste`, {
+    const response = await secureFetch(`${API_URL}/api/products/${productId}/ajuste`, {
       method: 'PUT',
       headers: getAuthHeaders(token),
       body: JSON.stringify({ cantidad_nueva }),
@@ -140,13 +183,12 @@ export const api = {
 
   getHistory: async () => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/api/history?_t=${Date.now()}`, {
+    const response = await secureFetch(`${API_URL}/api/history?_t=${Date.now()}`, {
       method: 'GET',
       headers: getAuthHeaders(token),
       cache: 'no-store',
     });
     if (!response.ok) {
-      if (response.status === 401) throw new Error('SESIÓN EXPIRADA');
       const err = await response.json();
       throw new Error(err.detail || `Error al obtener historial`);
     }
@@ -155,14 +197,43 @@ export const api = {
 
   clearHistory: async () => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/api/history/clear`, {
+    const response = await secureFetch(`${API_URL}/api/history/clear`, {
       method: 'POST',
       headers: getAuthHeaders(token),
     });
     if (!response.ok) {
-      if (response.status === 401) throw new Error('SESIÓN EXPIRADA');
       const err = await response.json();
       throw new Error(err.detail || `Error al limpiar historial`);
+    }
+    return response.json();
+  },
+
+  // ─── POS / Cajero ─────────────────────────────────────────────
+  checkoutPOS: async (items, total) => {
+    const token = getStoredToken();
+    const response = await secureFetch(`${API_URL}/api/pos/checkout`, {
+      method: 'POST',
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ items, total }),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `Error procesando la venta: ${response.status}`);
+    }
+    window.dispatchEvent(new Event('inventory-changed'));
+    return response.json();
+  },
+
+  getSales: async () => {
+    const token = getStoredToken();
+    const response = await secureFetch(`${API_URL}/api/sales?_t=${Date.now()}`, {
+      method: 'GET',
+      headers: getAuthHeaders(token),
+      cache: 'no-store',
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `Error al obtener historial de ventas`);
     }
     return response.json();
   },
@@ -170,7 +241,7 @@ export const api = {
   // ─── HU-25: User Management ────────────────────────────────────
   getUsers: async () => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/api/users`, {
+    const response = await secureFetch(`${API_URL}/api/users`, {
       headers: getAuthHeaders(token),
     });
     if (!response.ok) {
@@ -182,7 +253,7 @@ export const api = {
 
   createUser: async (userData) => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/api/users`, {
+    const response = await secureFetch(`${API_URL}/api/users`, {
       method: 'POST',
       headers: getAuthHeaders(token),
       body: JSON.stringify(userData),
@@ -196,7 +267,7 @@ export const api = {
 
   updateUser: async (username, data) => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/api/users/${username}`, {
+    const response = await secureFetch(`${API_URL}/api/users/${username}`, {
       method: 'PUT',
       headers: getAuthHeaders(token),
       body: JSON.stringify(data),
@@ -210,7 +281,7 @@ export const api = {
 
   deleteUser: async (username) => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/api/users/${username}`, {
+    const response = await secureFetch(`${API_URL}/api/users/${username}`, {
       method: 'DELETE',
       headers: getAuthHeaders(token),
     });
@@ -223,12 +294,52 @@ export const api = {
 
   getMovementStats: async () => {
     const token = getStoredToken();
-    const response = await fetch(`${API_URL}/api/stats/movements`, {
+    const response = await secureFetch(`${API_URL}/api/stats/movements`, {
       headers: getAuthHeaders(token),
     });
     if (!response.ok) {
       const err = await response.json();
       throw new Error(err.detail || `Error ${response.status}`);
+    }
+    return response.json();
+  },
+
+  // ─── Configuraciones (Categorías/Unidades) ────────────────────
+  getSettings: async () => {
+    const token = getStoredToken();
+    const response = await secureFetch(`${API_URL}/api/settings?_t=${Date.now()}`, {
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `Error ${response.status}`);
+    }
+    return response.json();
+  },
+
+  updateSettings: async (settingsData) => {
+    const token = getStoredToken();
+    const response = await secureFetch(`${API_URL}/api/settings`, {
+      method: 'PUT',
+      headers: getAuthHeaders(token),
+      body: JSON.stringify(settingsData),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || `Error ${response.status}`);
+    }
+    return response.json();
+  },
+
+  clearStats: async () => {
+    const token = getStoredToken();
+    const response = await secureFetch(`${API_URL}/api/stats/clear`, {
+      method: 'POST',
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.detail || 'Error al reiniciar estadísticas');
     }
     return response.json();
   }

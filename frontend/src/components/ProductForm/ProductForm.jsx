@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api } from '../../api/api';
 import { useToast } from '../Toast/ToastContext';
 import './ProductForm.css';
 
-const ProductForm = ({ onProductAdded }) => {
+const ProductForm = ({ onProductAdded, globalCategories = [], globalUnits = [] }) => {
   const { addToast } = useToast();
   const [formData, setFormData] = useState({
     id: '',
@@ -11,7 +11,8 @@ const ProductForm = ({ onProductAdded }) => {
     categoria: '',
     unidad_medida: '',
     cantidad: 1,
-    stock_minimo: 5 /* Valor por defecto recomendado */
+    stock_minimo: 5,
+    precio: 0
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -62,9 +63,11 @@ const ProductForm = ({ onProductAdded }) => {
     }
 
     try {
-      await api.createProduct(formData);
+      // Parsear precio a float
+      const payload = { ...formData, precio: parseFloat(formData.precio) || 0 };
+      await api.createProduct(payload);
       addToast(`¡Producto ${formData.nombre} (${formData.id}) registrado exitosamente!`, 'success');
-      setFormData({ id: '', nombre: '', categoria: '', unidad_medida: '', cantidad: 1, stock_minimo: 5 });
+      setFormData({ id: '', nombre: '', categoria: '', unidad_medida: '', cantidad: 1, stock_minimo: 5, precio: 0 });
       setIsExpanded(false); // Cierra el acordeón al guardar
       if (onProductAdded) {
         onProductAdded();
@@ -96,7 +99,17 @@ const ProductForm = ({ onProductAdded }) => {
       <form onSubmit={handleSubmit} className="product-form">
         <div className="form-group">
           <label htmlFor="id">ID (SKU)</label>
-          <input type="text" id="id" name="id" value={formData.id} onChange={handleChange} required placeholder="EJ: HER-001" disabled={loading} />
+          <input 
+            type="text" 
+            id="id" 
+            name="id" 
+            value={formData.id} 
+            onChange={handleChange} 
+            required 
+            placeholder="EJ: HER-001" 
+            disabled={loading} 
+            style={{ textTransform: 'uppercase' }}
+          />
         </div>
         
         <div className="form-group">
@@ -108,15 +121,7 @@ const ProductForm = ({ onProductAdded }) => {
           <label htmlFor="categoria">Categoría</label>
           <select id="categoria" name="categoria" value={formData.categoria} onChange={handleChange} required disabled={loading}>
             <option value="">Selecciona...</option>
-            <option value="Manuales">Manuales</option>
-            <option value="Eléctricas">Eléctricas</option>
-            <option value="Construcción">Construcción</option>
-            <option value="Plomería">Plomería</option>
-            <option value="Electricidad">Electricidad</option>
-            <option value="Pinturas">Pinturas</option>
-            <option value="Tornillería">Tornillería</option>
-            <option value="Seguridad">Seguridad</option>
-            <option value="Otros">Otros</option>
+            {globalCategories.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </div>
 
@@ -124,18 +129,14 @@ const ProductForm = ({ onProductAdded }) => {
           <label htmlFor="unidad_medida">Unidad de Medida</label>
           <select id="unidad_medida" name="unidad_medida" value={formData.unidad_medida} onChange={handleChange} required disabled={loading}>
             <option value="">Selecciona...</option>
-            <option value="Pieza">Pieza (pz)</option>
-            <option value="Caja">Caja</option>
-            <option value="Metro">Metro (m)</option>
-            <option value="Litro">Litro (L)</option>
-            <option value="Kilogramo">Kilogramo (kg)</option>
-            <option value="Galón">Galón</option>
-            <option value="Bolsa">Bolsa</option>
-            <option value="Paquete">Paquete</option>
-            <option value="Rollo">Rollo</option>
-            <option value="Par">Par</option>
-            <option value="Set/Juego">Set/Juego</option>
+            {globalUnits.map(u => <option key={u} value={u}>{u}</option>)}
           </select>
+        </div>
+
+
+        <div className="form-group">
+          <label htmlFor="precio">Precio Unitario ($)</label>
+          <input type="number" step="1" min="0" id="precio" name="precio" value={formData.precio} onChange={handleChange} required placeholder="Ej: 5000" disabled={loading}/>
         </div>
 
         <div className="form-group stock-form-group">

@@ -28,7 +28,7 @@ const HistoryDropdown = () => {
 
     const intervalId = setInterval(() => {
       fetchHistory(true);
-    }, 1000);
+    }, 30000);
 
     return () => {
       window.removeEventListener('inventory-changed', handleInventoryChange);

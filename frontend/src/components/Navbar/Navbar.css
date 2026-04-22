@@ -117,6 +117,19 @@
   border-color: rgba(99, 102, 241, 0.3);
 }
 
+.navbar-mobile-toggle {
+  display: none;
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.navbar-mobile-toggle:hover {
+  background-color: #4338ca;
+  color: white;
+  transform: translateY(-1px);
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 768px) {
   .user-info { display: none; }
@@ -154,3 +167,57 @@
 .theme-toggle:hover {
   background-color: var(--border-color);
 }
+
+/* =========================================
+   TABS DE NAVEGACION (INVENTARIO / CAJERO)
+   ========================================= */
+.navbar-tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 4px;
+  border-radius: 99px;
+  border: 1px solid var(--border-color);
+}
+
+[data-theme='dark'] .navbar-tabs {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.nav-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 0.6rem 1.25rem;
+  border-radius: 99px;
+  color: var(--text-color);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-tab-btn:hover {
+  background: rgba(79, 70, 229, 0.05);
+}
+
+.nav-tab-btn.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+}
+
+@media (max-width: 768px) {
+  .navbar-logo {
+    width: auto;
+  }
+  .navbar-tabs {
+    display: none;
+  }
+  .navbar-mobile-toggle {
+    display: flex;
+  }
+  .navbar-logo h2 {
+    font-size: 1.25rem;
+  }
+}
+

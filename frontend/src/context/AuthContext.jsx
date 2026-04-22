@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { api } from '../api/api';
 
 const AuthContext = createContext(null);
@@ -10,7 +10,7 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [session, setSession] = useState(() => {
     try {
-      const stored = sessionStorage.getItem('sisteminv_session');
+      const stored = localStorage.getItem('sisteminv_session');
       return stored ? JSON.parse(stored) : null;
     } catch {
       return null;
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       username: data.username,
       nombre_completo: data.nombre_completo,
     };
-    sessionStorage.setItem('sisteminv_session', JSON.stringify(sessionData));
+    localStorage.setItem('sisteminv_session', JSON.stringify(sessionData));
     setSession(sessionData);
     return sessionData;
   }, []);
@@ -38,9 +38,24 @@ export const AuthProvider = ({ children }) => {
         // El servidor puede estar caído; limpiar sesión local de todas formas.
       }
     }
-    sessionStorage.removeItem('sisteminv_session');
+    localStorage.removeItem('sisteminv_session');
     setSession(null);
   }, [session]);
+
+  const forceLogout = useCallback(() => {
+    localStorage.removeItem('sisteminv_session');
+    setSession(null);
+  }, []);
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      console.warn("Sesión expirada o no autorizada. Redirigiendo...");
+      forceLogout();
+    };
+
+    window.addEventListener('unauthorized-api-call', handleUnauthorized);
+    return () => window.removeEventListener('unauthorized-api-call', handleUnauthorized);
+  }, [forceLogout]);
 
   return (
     <AuthContext.Provider value={{ session, login, logout }}>

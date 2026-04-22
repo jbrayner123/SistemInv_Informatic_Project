@@ -22,8 +22,10 @@ const AdminDashboard = ({ onClose }) => {
   const { addToast } = useToast();
   const [users, setUsers] = useState([]);
   const [stats, setStats] = useState(null);
+  const [settings, setSettings] = useState({ categorias: [], unidades: [] });
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingStats, setLoadingStats] = useState(true);
+  const [loadingSettings, setLoadingSettings] = useState(true);
 
   // Form modal state
   const [showForm, setShowForm] = useState(false);
@@ -33,6 +35,15 @@ const AdminDashboard = ({ onClose }) => {
 
   // Delete confirmation state
   const [userToDelete, setUserToDelete] = useState(null);
+  const [showConfirmClear, setShowConfirmClear] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
+
+  // Settings Inline State
+  const [isAddingCat, setIsAddingCat] = useState(false);
+  const [newCatVal, setNewCatVal] = useState('');
+  const [isAddingUnit, setIsAddingUnit] = useState(false);
+  const [newUnitVal, setNewUnitVal] = useState('');
+  const [settingToRemove, setSettingToRemove] = useState(null); // { type, val }
 
   const fetchUsers = async () => {
     try {
@@ -58,9 +69,25 @@ const AdminDashboard = ({ onClose }) => {
     }
   };
 
+  const fetchSettings = async () => {
+    try {
+      setLoadingSettings(true);
+      const data = await api.getSettings();
+      setSettings({
+        categorias: data.categorias || [],
+        unidades: data.unidades || []
+      });
+    } catch (err) {
+      addToast('Error al cargar configuración: ' + err.message, 'error');
+    } finally {
+      setLoadingSettings(false);
+    }
+  };
+
   useEffect(() => {
     fetchUsers();
     fetchStats();
+    fetchSettings();
   }, []);
 
   const resetForm = () => {
@@ -124,6 +151,67 @@ const AdminDashboard = ({ onClose }) => {
   // Un admin no se puede eliminar a sí mismo ni eliminar a otro admin
   const canDelete = (user) => {
     return user.rol !== 'admin';
+  };
+
+  const onAddSetting = async (type) => {
+    const val = type === 'categorias' ? newCatVal : newUnitVal;
+    if (!val || val.trim() === '') {
+      if (type === 'categorias') setIsAddingCat(false);
+      else setIsAddingUnit(false);
+      return;
+    }
+    
+    if (settings[type].includes(val.trim())) {
+      addToast('Este valor ya existe.', 'error');
+      return;
+    }
+
+    const updated = { ...settings, [type]: [...settings[type], val.trim()] };
+    try {
+      await api.updateSettings(updated);
+      setSettings(updated);
+      addToast(`${val} agregado.`, 'success');
+      if (type === 'categorias') {
+        setNewCatVal('');
+        setIsAddingCat(false);
+      } else {
+        setNewUnitVal('');
+        setIsAddingUnit(false);
+      }
+      window.dispatchEvent(new Event('inventory-changed'));
+    } catch (err) {
+      addToast('Error guardando configuración', 'error');
+    }
+  };
+
+  const confirmRemoveSetting = async () => {
+    if (!settingToRemove) return;
+    const { type, val } = settingToRemove;
+    const updated = { ...settings, [type]: settings[type].filter(item => item !== val) };
+    try {
+      await api.updateSettings(updated);
+      setSettings(updated);
+      addToast(`${val} eliminado.`, 'success');
+      window.dispatchEvent(new Event('inventory-changed'));
+    } catch (err) {
+      addToast('Error guardando configuración', 'error');
+    } finally {
+      setSettingToRemove(null);
+    }
+  };
+
+  const handleClearStats = async () => {
+    setIsClearing(true);
+    try {
+      await api.clearStats();
+      addToast('Estadísticas reiniciadas correctamente.', 'success');
+      fetchStats(); // Recargar gráficas (estarán vacías)
+    } catch (err) {
+      addToast(err.message, 'error');
+    } finally {
+      setIsClearing(false);
+      setShowConfirmClear(false);
+    }
   };
 
   return (
@@ -199,9 +287,107 @@ const AdminDashboard = ({ onClose }) => {
             )}
           </section>
 
+          {/* ─── SECCIÓN: Configuración del Sistema ─── */}
+          <section className="admin-section">
+            <div className="section-header">
+              <h3>Configuración del Sistema</h3>
+            </div>
+            {loadingSettings ? (
+              <p className="loading-text">Cargando configuración...</p>
+            ) : (
+              <div className="settings-grid">
+                <div className="card">
+                  <div className="section-header" style={{ marginBottom: '1rem' }}>
+                    <h4>Categorías</h4>
+                    {!isAddingCat ? (
+                      <button className="btn-outline-success" onClick={() => setIsAddingCat(true)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <span>Añadir</span>
+                      </button>
+                    ) : (
+                      <div className="setting-add-inline">
+                        <button className="btn-cancel-inline" onClick={() => { setIsAddingCat(false); setNewCatVal(''); }} title="Cancelar">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                        <input 
+                          autoFocus
+                          type="text" 
+                          value={newCatVal} 
+                          onChange={(e) => setNewCatVal(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && onAddSetting('categorias')}
+                          placeholder="Nueva..."
+                          style={{ textTransform: 'capitalize' }}
+                        />
+                        <button className="btn-save-inline" onClick={() => onAddSetting('categorias')} title="Guardar">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <div className="settings-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    {settings.categorias.map(cat => (
+                      <span key={cat} className="setting-badge">
+                        {cat}
+                        <button className="btn-remove-setting" onClick={() => setSettingToRemove({ type: 'categorias', val: cat })}>&times;</button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="card">
+                  <div className="section-header" style={{ marginBottom: '1rem' }}>
+                    <h4>Unidades de Medida</h4>
+                    {!isAddingUnit ? (
+                      <button className="btn-outline-success" onClick={() => setIsAddingUnit(true)}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        <span>Añadir</span>
+                      </button>
+                    ) : (
+                      <div className="setting-add-inline">
+                        <button className="btn-cancel-inline" onClick={() => { setIsAddingUnit(false); setNewUnitVal(''); }} title="Cancelar">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                        </button>
+                        <input 
+                          autoFocus
+                          type="text" 
+                          value={newUnitVal} 
+                          onChange={(e) => setNewUnitVal(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && onAddSetting('unidades')}
+                          placeholder="Nueva..."
+                          style={{ textTransform: 'capitalize' }}
+                        />
+                        <button className="btn-save-inline" onClick={() => onAddSetting('unidades')} title="Guardar">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <div className="settings-list" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    {settings.unidades.map(un => (
+                      <span key={un} className="setting-badge">
+                        {un}
+                        <button className="btn-remove-setting" onClick={() => setSettingToRemove({ type: 'unidades', val: un })}>&times;</button>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </section>
+
           {/* ─── SECCIÓN: Analítica de Movimientos ─── */}
           <section className="admin-section">
-            <h3>Analítica de Movimientos</h3>
+            <div className="section-header">
+              <h3>Analítica de Movimientos</h3>
+              <button 
+                className="btn-outline-danger" 
+                onClick={() => setShowConfirmClear(true)}
+                style={{ fontSize: '0.8rem', padding: '0.4rem 0.8rem' }}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+                <span>Borrar Datos</span>
+              </button>
+            </div>
             {loadingStats ? (
               <p className="loading-text">Cargando estadísticas...</p>
             ) : stats && (
@@ -220,6 +406,28 @@ const AdminDashboard = ({ onClose }) => {
                           <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                         ))}
                       </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* NUEVO: Barras: Ingresos por Cajero (HU-35) */}
+                <div className="chart-card card">
+                  <h4>Ingresos por Empleado</h4>
+                  <ResponsiveContainer width="100%" height={280}>
+                    <BarChart data={stats.revenue_by_user} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" />
+                      <XAxis dataKey="name" tick={{ fill: 'var(--muted-text)', fontSize: 12 }} />
+                      <YAxis 
+                        tick={{ fill: 'var(--muted-text)', fontSize: 12 }} 
+                        tickFormatter={(val) => `$${val.toLocaleString('es-CO')}`} 
+                      />
+                      <Tooltip 
+                        contentStyle={TOOLTIP_STYLE} 
+                        itemStyle={{ color: '#10b981', fontWeight: 'bold' }} 
+                        labelStyle={{ color: 'var(--text-color)' }}
+                        formatter={(value) => [`$${value.toLocaleString('es-CO')}`, 'Recaudo']}
+                      />
+                      <Bar dataKey="total" fill="#10b981" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -265,12 +473,18 @@ const AdminDashboard = ({ onClose }) => {
                 {/* KPIs */}
                 <div className="stats-summary card">
                   <div className="stat-item">
+                    <span className="stat-number" style={{color: '#10b981'}}>
+                      ${(stats.revenue_by_user?.reduce((acc, curr) => acc + curr.total, 0) || 0).toLocaleString('es-CO')}
+                    </span>
+                    <span className="stat-label">Ingresos Totales</span>
+                  </div>
+                  <div className="stat-item">
                     <span className="stat-number">{stats.total_movements}</span>
-                    <span className="stat-label">Movimientos Totales</span>
+                    <span className="stat-label">Mov. Totales</span>
                   </div>
                   <div className="stat-item">
                     <span className="stat-number">{stats.by_user.length}</span>
-                    <span className="stat-label">Usuarios Activos</span>
+                    <span className="stat-label">Cajeros Activos</span>
                   </div>
                   <div className="stat-item">
                     <span className="stat-number">{stats.by_type.length}</span>
@@ -297,7 +511,14 @@ const AdminDashboard = ({ onClose }) => {
               {!editingUser && (
                 <div className="form-group">
                   <label>Usuario (login)</label>
-                  <input type="text" value={formData.username} onChange={e => setFormData(p => ({...p, username: e.target.value}))} required placeholder="ej: pedro123" />
+                  <input 
+                    type="text" 
+                    value={formData.username} 
+                    onChange={e => setFormData(p => ({...p, username: e.target.value}))} 
+                    required 
+                    placeholder="ej: pedro123" 
+                    style={{ textTransform: 'lowercase' }}
+                  />
                 </div>
               )}
               <div className="form-group">
@@ -336,6 +557,24 @@ const AdminDashboard = ({ onClose }) => {
         confirmText="Sí, eliminar"
         onConfirm={confirmDeleteUser}
         onCancel={() => setUserToDelete(null)}
+      />
+
+      <ConfirmModal
+        isOpen={showConfirmClear}
+        title="Reiniciar Estadísticas"
+        message="¿Estás seguro de que deseas borrar todos los datos de las gráficas? Esta acción eliminará permanentemente todo el historial de movimientos y ventas. No se puede deshacer."
+        confirmText={isClearing ? "Borrando..." : "Sí, borrar todo"}
+        onConfirm={handleClearStats}
+        onCancel={() => setShowConfirmClear(false)}
+      />
+
+      <ConfirmModal
+        isOpen={!!settingToRemove}
+        title="Eliminar Configuración"
+        message={settingToRemove ? `¿Estás seguro de que deseas eliminar "${settingToRemove.val}"? Esto afectará a los productos que lo usen.` : ''}
+        confirmText="Sí, eliminar"
+        onConfirm={confirmRemoveSetting}
+        onCancel={() => setSettingToRemove(null)}
       />
     </div>
   );

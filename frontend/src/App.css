@@ -99,3 +99,15 @@
     gap: 2.5rem;
   }
 }
+
+/* Ocultar flechas internas en inputs de precio */
+input[name="precio"]::-webkit-outer-spin-button,
+input[name="precio"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[name="precio"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

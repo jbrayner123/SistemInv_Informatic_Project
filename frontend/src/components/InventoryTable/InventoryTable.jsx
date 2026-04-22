@@ -120,6 +120,36 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
     }
   };
 
+  // Sorting logic memoized (MOVED TO TOP LEVEL TO OBEY RULES OF HOOKS)
+  const sortedProducts = React.useMemo(() => {
+    let sorted = [...products];
+    if (sortConfig.key) {
+      sorted.sort((a, b) => {
+        let aVal = a[sortConfig.key];
+        let bVal = b[sortConfig.key];
+        
+        if (typeof aVal === 'string') {
+          aVal = aVal.toLowerCase();
+          bVal = bVal.toLowerCase();
+        }
+        
+        if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+        if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+        return 0;
+      });
+    }
+    return sorted;
+  }, [products, sortConfig]);
+
+  // Pagination logic memoized (MOVED TO TOP LEVEL)
+  const currentProducts = React.useMemo(() => {
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    return sortedProducts.slice(indexOfFirstItem, indexOfLastItem);
+  }, [sortedProducts, currentPage, itemsPerPage]);
+
+  const totalPages = Math.ceil(products.length / itemsPerPage);
+
   if (loading && products.length === 0) {
     return <div className="loading-state">Cargando inventario...</div>;
   }
@@ -128,30 +158,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
     return <div className="alert error">Error al cargar el inventario: {error}</div>;
   }
 
-  // Sorting logic
-  let sortedProducts = [...products];
-  if (sortConfig.key) {
-    sortedProducts.sort((a, b) => {
-      let aVal = a[sortConfig.key];
-      let bVal = b[sortConfig.key];
-      
-      if (typeof aVal === 'string') {
-        aVal = aVal.toLowerCase();
-        bVal = bVal.toLowerCase();
-      }
-      
-      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
-      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
-      return 0;
-    });
-  }
 
-  // Pagination logic
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-  const MathPages = totalPages > 0 ? totalPages : 1;
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentProducts = sortedProducts.slice(indexOfFirstItem, indexOfLastItem);
   
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -192,6 +199,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
         { header: 'NOMBRE DEL PRODUCTO', key: 'nombre', width: 35 },
         { header: 'CATEGORÍA', key: 'categoria', width: 25 },
         { header: 'UNIDAD', key: 'unidad', width: 15 },
+        { header: 'PRECIO', key: 'precio', width: 15 },
         { header: 'STOCK ACTUAL', key: 'stock', width: 15 },
         { header: 'ESTADO', key: 'estado', width: 15 }
       ];
@@ -237,6 +245,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
           nombre: p.nombre,
           categoria: p.categoria,
           unidad: p.unidad_medida,
+          precio: `$${(p.precio !== undefined ? p.precio : 10).toLocaleString('es-CO', { maximumFractionDigits: 0 })}`,
           stock: p.cantidad,
           estado: estado
         });
@@ -254,10 +263,10 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
           cell.border = {
             bottom: { style: 'thin', color: { argb: 'FFE5E7EB' } }
           };
-          cell.alignment = { vertical: 'middle', horizontal: colNumber === 5 || colNumber === 6 ? 'center' : 'left' };
+          cell.alignment = { vertical: 'middle', horizontal: colNumber >= 5 ? 'center' : 'left' };
           
           // Dar color específico a la casilla de Estado y Stock
-          if (colNumber === 5 || colNumber === 6) {
+          if (colNumber === 6 || colNumber === 7) {
             cell.font = { color: { argb: stockColor }, bold: true };
           }
         });
@@ -305,7 +314,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
       doc.text(`Generado el: ${now.toLocaleDateString('es-ES')} a las ${now.toLocaleTimeString('es-ES')}`, 14, 30);
       
       // Tabla
-      const tableColumn = ["ID (SKU)", "NOMBRE", "CATEGORÍA", "STOCK", "ESTADO"];
+      const tableColumn = ["ID (SKU)", "NOMBRE", "CATEGORÍA", "PRECIO", "STOCK", "ESTADO"];
       const tableRows = [];
 
       sortedProducts.forEach(p => {
@@ -318,6 +327,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
           p.id,
           p.nombre.length > 30 ? p.nombre.substring(0, 30) + '...' : p.nombre,
           p.categoria,
+          `$${(p.precio !== undefined ? p.precio : 10).toLocaleString('es-CO', { maximumFractionDigits: 0 })}`,
           `${p.cantidad} ${p.unidad_medida}`,
           estado
         ];
@@ -332,7 +342,7 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
         headStyles: { fillColor: [16, 185, 129] }, // Verde premium
         styles: { fontSize: 9 },
         didParseCell: function(data) {
-          if (data.section === 'body' && data.column.index === 4) {
+          if (data.section === 'body' && data.column.index === 5) {
             if (data.cell.raw === 'AGOTADO') {
               data.cell.styles.textColor = [239, 68, 68];
               data.cell.styles.fontStyle = 'bold';
@@ -397,6 +407,9 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
               <th onClick={() => requestSort('unidad_medida')} className="sortable-header">
                 U. Medida {getSortIcon('unidad_medida')}
               </th>
+              <th onClick={() => requestSort('precio')} className="sortable-header">
+                Precio {getSortIcon('precio')}
+              </th>
               <th onClick={() => requestSort('cantidad')} className="sortable-header">
                 Stock Actual {getSortIcon('cantidad')}
               </th>
@@ -418,6 +431,9 @@ const InventoryTable = ({ products, onStockUpdated, loading, error, rol = 'admin
                   <td className="font-semibold">{product.nombre}</td>
                   <td><span className="badge category-badge">{product.categoria}</span></td>
                   <td>{product.unidad_medida}</td>
+                  <td style={{ color: 'var(--primary)', fontWeight: 'bold' }}>
+                    ${(product.precio !== undefined ? product.precio : 10).toLocaleString('es-CO', { maximumFractionDigits: 0 })}
+                  </td>
                   <td>
                     <span 
                       className={`stock-badge ${

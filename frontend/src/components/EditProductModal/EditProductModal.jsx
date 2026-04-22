@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { api } from '../../api/api';
 import './EditProductModal.css';
 
 const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
@@ -6,10 +7,29 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
     nombre: '',
     categoria: '',
     unidad_medida: '',
-    stock_minimo: 5
+    stock_minimo: 5,
+    precio: 0
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const [categories, setCategories] = useState([]);
+  const [units, setUnits] = useState([]);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await api.getSettings();
+        setCategories(data.categorias || []);
+        setUnits(data.unidades || []);
+      } catch (err) {
+        console.error("Error cargando configuración", err);
+      }
+    };
+    if (isOpen) {
+      fetchSettings();
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     if (product) {
@@ -17,7 +37,8 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
         nombre: product.nombre || '',
         categoria: product.categoria || '',
         unidad_medida: product.unidad_medida || '',
-        stock_minimo: product.stock_minimo !== undefined ? product.stock_minimo : 5
+        stock_minimo: product.stock_minimo !== undefined ? product.stock_minimo : 5,
+        precio: product.precio !== undefined ? product.precio : 0
       });
     }
   }, [product]);
@@ -52,7 +73,8 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
     setLoading(true);
     setError(null);
     try {
-      await onSave(product.id, formData);
+      const payload = { ...formData, precio: parseFloat(formData.precio) || 0 };
+      await onSave(product.id, payload);
       onClose();
     } catch (err) {
       setError(err.message || 'Error al guardar los cambios');
@@ -103,15 +125,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                   required
                 >
                   <option value="" disabled hidden>Seleccione categoría</option>
-                  <option value="Manuales">Manuales</option>
-                  <option value="Eléctricas">Eléctricas</option>
-                  <option value="Construcción">Construcción</option>
-                  <option value="Plomería">Plomería</option>
-                  <option value="Electricidad">Electricidad</option>
-                  <option value="Pinturas">Pinturas</option>
-                  <option value="Tornillería">Tornillería</option>
-                  <option value="Seguridad">Seguridad</option>
-                  <option value="Otros">Otros</option>
+                  {categories.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
                 <span className="select-chevron">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -133,17 +147,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
                   required
                 >
                   <option value="" disabled hidden>Unidad</option>
-                  <option value="Pieza">Pieza (pz)</option>
-                  <option value="Caja">Caja</option>
-                  <option value="Metro">Metro (m)</option>
-                  <option value="Litro">Litro (L)</option>
-                  <option value="Kilogramo">Kilogramo (kg)</option>
-                  <option value="Galón">Galón</option>
-                  <option value="Bolsa">Bolsa</option>
-                  <option value="Paquete">Paquete</option>
-                  <option value="Rollo">Rollo</option>
-                  <option value="Par">Par</option>
-                  <option value="Set/Juego">Set/Juego</option>
+                  {units.map(u => <option key={u} value={u}>{u}</option>)}
                 </select>
                 <span className="select-chevron">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -152,6 +156,26 @@ const EditProductModal = ({ isOpen, onClose, product, onSave }) => {
             </div>
           </div>
           
+          <div className="form-group" style={{ marginBottom: '1rem' }}>
+            <label htmlFor="edit-precio">Precio Unitario de Venta ($)</label>
+            <div className="input-icon-wrapper">
+              <span className="input-icon" style={{color: '#10B981', fontWeight: 'bold'}}>
+                $
+              </span>
+              <input
+                type="number"
+                step="1"
+                min="0"
+                id="edit-precio"
+                name="precio"
+                value={formData.precio}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              />
+            </div>
+          </div>
+
           <div className="form-group stock-form-group" style={{maxWidth: '100%', marginBottom: '1.5rem'}}>
             <label htmlFor="edit-stock-minimo">Stock Mínimo (Cuándo notificar escasez)</label>
             <div className="custom-number-input">

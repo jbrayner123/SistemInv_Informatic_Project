@@ -4,3 +4,7 @@ pymongo[srv]
 dnspython
 pydantic
 certifi
+pytest
+pytest-cov
+httpx
+mongomock
