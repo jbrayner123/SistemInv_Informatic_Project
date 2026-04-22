@@ -1,17 +1,19 @@
 import os
-import smtplib
-from email.message import EmailMessage
+import resend
 from dotenv import load_dotenv
 from datetime import datetime
 
 load_dotenv()
 
-# Credenciales de Email desde variables de entorno
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 465
-SMTP_USER = os.environ.get("SMTP_USER", "")
-SMTP_PASS = os.environ.get("SMTP_PASS", "")  # Debe ser App Password si es Gmail
-ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", SMTP_USER)
+# Credenciales de Email desde variables de entorno (Resend)
+resend.api_key = os.environ.get("RESEND_API_KEY", "")
+
+# Correo de envío por defecto (Resend provee onboarding@resend.dev para pruebas)
+# Para producción debes verificar tu propio dominio en Resend
+RESEND_FROM_EMAIL = os.environ.get("RESEND_FROM_EMAIL", "onboarding@resend.dev")
+
+# Email del administrador del sistema al que llegarán alertas por default
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL", "prueba@tucorreo.com")
 
 # ─── Plantilla base HTML ────────────────────────────────────────────
 def _base_template(title: str, accent_color: str, body_content: str) -> str:
@@ -57,23 +59,27 @@ def _base_template(title: str, accent_color: str, body_content: str) -> str:
 
 
 def send_email_alert(subject: str, html_content: str, to_address: str = None):
-    if not SMTP_USER or not SMTP_PASS:
-        print("[WARNING] Credentials SMTP_USER or SMTP_PASS missing. Email skip.")
+    if not resend.api_key:
+        print("[WARNING] Credentials RESEND_API_KEY missing. Email skip.")
         return False
         
     try:
-        msg = EmailMessage()
-        msg['Subject'] = subject
-        msg['From'] = SMTP_USER
-        msg['To'] = to_address or ADMIN_EMAIL
-        msg.set_content(html_content, subtype='html')
-
-        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
-            server.login(SMTP_USER, SMTP_PASS)
-            server.send_message(msg)
+        # Importante: Para usar el dominio onboarding@resend.dev gratis,
+        # el correo de destino "to" *DEBE* ser el mismo correo con el que te registraste en Resend.
+        # Una vez que verifiques un dominio propio en el dashboard de Resend,
+        # podrás enviar a cualquier cuenta de correo.
+        to_email = to_address or ADMIN_EMAIL
+        
+        response = resend.Emails.send({
+            "from": RESEND_FROM_EMAIL,
+            "to": [to_email],
+            "subject": subject,
+            "html": html_content,
+        })
+        print(f"[INFO] Correo enviado exitosamente vía Resend: {response}")
         return True
     except Exception as e:
-        print(f"[ERROR] No se pudo enviar el correo: {e}")
+        print(f"[ERROR] No se pudo enviar el correo vía Resend: {e}")
         return False
 
 
