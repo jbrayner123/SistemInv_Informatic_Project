@@ -18,7 +18,7 @@ const TOOLTIP_STYLE = {
   color: 'var(--text-color)'
 };
 
-const AdminDashboard = ({ onClose }) => {
+const AdminDashboard = ({ onClose, products = [] }) => {
   const { addToast } = useToast();
   const [users, setUsers] = useState([]);
   const [stats, setStats] = useState(null);
@@ -184,6 +184,21 @@ const AdminDashboard = ({ onClose }) => {
     }
   };
 
+  const handleRemoveSettingClick = (type, val) => {
+    let inUseCount = 0;
+    if (type === 'categorias') {
+      inUseCount = products.filter(p => p.categoria === val).length;
+    } else if (type === 'unidades') {
+      inUseCount = products.filter(p => p.unidad_medida === val).length;
+    }
+
+    if (inUseCount > 0) {
+      addToast(`No se puede eliminar. Hay ${inUseCount} producto(s) usando esta configuración ("${val}").`, 'error');
+      return;
+    }
+    setSettingToRemove({ type, val });
+  };
+
   const confirmRemoveSetting = async () => {
     if (!settingToRemove) return;
     const { type, val } = settingToRemove;
@@ -328,7 +343,7 @@ const AdminDashboard = ({ onClose }) => {
                     {settings.categorias.map(cat => (
                       <span key={cat} className="setting-badge">
                         {cat}
-                        <button className="btn-remove-setting" onClick={() => setSettingToRemove({ type: 'categorias', val: cat })}>&times;</button>
+                        <button className="btn-remove-setting" onClick={() => handleRemoveSettingClick('categorias', cat)}>&times;</button>
                       </span>
                     ))}
                   </div>
@@ -366,7 +381,7 @@ const AdminDashboard = ({ onClose }) => {
                     {settings.unidades.map(un => (
                       <span key={un} className="setting-badge">
                         {un}
-                        <button className="btn-remove-setting" onClick={() => setSettingToRemove({ type: 'unidades', val: un })}>&times;</button>
+                        <button className="btn-remove-setting" onClick={() => handleRemoveSettingClick('unidades', un)}>&times;</button>
                       </span>
                     ))}
                   </div>

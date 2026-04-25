@@ -229,7 +229,7 @@ function AppShell() {
 
       {/* Panel de Administración — HU-25 */}
       {showAdminPanel && (
-        <AdminDashboard onClose={() => setShowAdminPanel(false)} />
+        <AdminDashboard onClose={() => setShowAdminPanel(false)} products={products} />
       )}
 
       {/* Historial de Ventas (Facturas) */}
