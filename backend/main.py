@@ -129,8 +129,12 @@ seed_db()
 # ─────────────────────────────────────────────
 # Helper para eliminar el campo _id de MongoDB
 # ─────────────────────────────────────────────
-def clean(doc: dict) -> dict:
+def clean(doc):
     """Elimina el campo _id de MongoDB para que no rompa el esquema de Pydantic."""
+    if isinstance(doc, list):
+        for d in doc:
+            d.pop("_id", None)
+        return doc
     doc.pop("_id", None)
     return doc
 
