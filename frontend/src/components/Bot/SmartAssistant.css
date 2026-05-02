@@ -288,9 +288,13 @@
 .sa-chat-footer button:not(:disabled):hover {
   background: var(--success-hover);
 }
+/* Botón cerrar: oculto en desktop, visible solo en móvil */
+.sa-close-btn {
+  display: none;
+}
 
 /* ═══════════════════════════════════════════════ */
-/* Responsividad para Móviles                      */
+/* Responsividad para Tablets                      */
 /* ═══════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .smart-assistant-container {
@@ -327,13 +331,31 @@
   }
 }
 
+/* ═══════════════════════════════════════════════ */
+/* Responsividad para Celulares                    */
+/* ═══════════════════════════════════════════════ */
 @media (max-width: 480px) {
   .smart-assistant-container {
     bottom: 12px;
     right: 12px;
   }
 
-  /* Chat ocupa toda la pantalla en móvil */
+  /* Mostrar botón cerrar (X) dentro del header */
+  .sa-close-btn {
+    display: flex !important;
+  }
+
+  /* Ocultar botón expandir (no hace falta, ya es fullscreen) */
+  .sa-expand-desktop {
+    display: none;
+  }
+
+  /* Ocultar el botón flotante cuando el chat está abierto */
+  .sa-chat-window.active ~ .sa-toggle-btn {
+    display: none;
+  }
+
+  /* Chat ocupa toda la pantalla */
   .sa-chat-window {
     position: fixed;
     top: 0;
@@ -357,7 +379,7 @@
     bottom: 0;
   }
 
-  /* Header más compacto */
+  /* Header compacto */
   .sa-chat-header {
     padding: 12px 14px;
     border-radius: 0;
@@ -377,13 +399,12 @@
     gap: 8px;
   }
 
-  /* Body ocupa todo el espacio disponible */
+  /* Body */
   .sa-chat-body {
     padding: 12px;
     gap: 10px;
   }
 
-  /* Burbujas aprovechan más espacio horizontal */
   .sa-message {
     max-width: 90%;
     font-size: 0.9rem;
@@ -398,7 +419,7 @@
   }
 
   .sa-chat-footer input {
-    font-size: 16px; /* >= 16px evita el zoom automático en iOS */
+    font-size: 16px;
     padding: 10px 14px;
     border-radius: 18px;
   }
@@ -409,7 +430,6 @@
     flex-shrink: 0;
   }
 
-  /* Botón toggle se reposiciona */
   .sa-toggle-btn {
     width: 50px;
     height: 50px;
