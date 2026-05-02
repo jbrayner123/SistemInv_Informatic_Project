@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useToast } from '../Toast/ToastContext';
 import { api } from '../../api/api';
 import './POS.css';
@@ -46,6 +46,48 @@ const POS = ({ products, onSaleComplete, allCategories = [] }) => {
     });
     addToast(`${quantity} ${product.nombre} agregados al carrito`, "success");
   };
+
+  useEffect(() => {
+    const handleClearCart = () => setCart([]);
+    window.addEventListener('clear-pos-cart', handleClearCart);
+    return () => window.removeEventListener('clear-pos-cart', handleClearCart);
+  }, []);
+
+  // Escuchar el evento especial del SmartAssistant (Bot AI) para precargar carrito
+  useEffect(() => {
+    const handleBotCart = (e) => {
+      const itemsStr = e.detail?.itemsStr;
+      if (!itemsStr) return;
+      
+      const parts = itemsStr.split(',');
+      let addedAny = false;
+      
+      parts.forEach(par => {
+        const [pidRaw, qtyRaw] = par.split('=');
+        if (!pidRaw || !qtyRaw) return;
+        
+        const pid = pidRaw.trim().toUpperCase();
+        const qty = parseInt(qtyRaw.trim());
+        if (isNaN(qty) || qty <= 0) return;
+        
+        const targetProduct = products.find(p => p.id.toUpperCase() === pid);
+        if (targetProduct) {
+           addToCart(targetProduct, qty);
+           addedAny = true;
+        } else {
+           addToast(`El bot intentó agregar ${pid} per no existe.`, "error");
+        }
+      });
+      
+      if (addedAny) setActiveTab('cart');
+    };
+    
+    window.addEventListener('botAddToCart', handleBotCart);
+    return () => window.removeEventListener('botAddToCart', handleBotCart);
+    // IMPORTANTE: NO ponemos addToCart como dependencia porque su referencia cambia
+    // Dependemos de products para buscar bien, el linter podría quejarse pero es seguro
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products]);
 
   const handleProductCardClick = (product) => {
     if (product.cantidad === 0) {

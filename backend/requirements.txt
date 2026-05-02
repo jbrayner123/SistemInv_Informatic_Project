@@ -4,6 +4,8 @@ pymongo[srv]
 dnspython
 pydantic
 certifi
+google-generativeai
+python-dotenv
 pytest
 pytest-cov
 httpx

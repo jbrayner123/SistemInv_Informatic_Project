@@ -342,5 +342,32 @@ export const api = {
       throw new Error(err.detail || 'Error al reiniciar estadísticas');
     }
     return response.json();
+  },
+
+  // ─── Bot Assistant ──────────────────────────────────────────────
+  chatWithBot: async (message) => {
+    const token = getStoredToken();
+    const response = await secureFetch(`${API_URL}/api/bot/chat`, {
+      method: 'POST',
+      headers: getAuthHeaders(token),
+      body: JSON.stringify({ message }),
+    });
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.detail || 'Error de conexión con el bot');
+    }
+    return response.json();
+  },
+
+  clearBotChat: async () => {
+    const token = getStoredToken();
+    const response = await secureFetch(`${API_URL}/api/bot/clear`, {
+      method: 'POST',
+      headers: getAuthHeaders(token),
+    });
+    if (!response.ok) {
+        throw new Error('Error al limpiar chat en el servidor');
+    }
+    return response.json();
   }
 };

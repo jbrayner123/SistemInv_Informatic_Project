@@ -10,6 +10,7 @@ import DashboardResumen from './components/DashboardResumen/DashboardResumen';
 import InventoryFilterBar from './components/InventoryFilterBar/InventoryFilterBar';
 import AdminDashboard from './components/AdminDashboard/AdminDashboard';
 import SalesHistoryModal from './components/SalesHistoryModal/SalesHistoryModal';
+import SmartAssistant from './components/Bot/SmartAssistant';
 import { api } from './api/api';
 import './App.css';
 
@@ -116,6 +117,9 @@ function AppShell() {
     const handleInventoryChange = () => fetchProducts(true);
     window.addEventListener('inventory-changed', handleInventoryChange);
     
+    const handleOpenPos = () => setCurrentView('pos');
+    window.addEventListener('open-pos-view', handleOpenPos);
+    
     // Heartbeat más relajado (cada 30s) para sincronización pasiva
     const intervalId = setInterval(() => {
       fetchProducts(true);
@@ -123,6 +127,7 @@ function AppShell() {
 
     return () => {
       window.removeEventListener('inventory-changed', handleInventoryChange);
+      window.removeEventListener('open-pos-view', handleOpenPos);
       clearInterval(intervalId);
     };
   }, [session]);
@@ -236,6 +241,9 @@ function AppShell() {
       {showSalesHistory && (
         <SalesHistoryModal onClose={() => setShowSalesHistory(false)} />
       )}
+
+      {/* Asistente FLotante de Inteligencia Artificial */}
+      <SmartAssistant />
     </div>
   );
 }

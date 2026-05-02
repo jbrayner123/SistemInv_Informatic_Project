@@ -302,3 +302,58 @@ def alert_password_reset(username: str, token: str):
     """
     html = _base_template("Restablecimiento de Contraseña", "#10b981", body)
     send_email_alert(subject, html)
+
+# ─── Reporte Global de Inventario (Bot) ────────────────────────────
+def alert_inventory_report(low_stock_items: list, out_of_stock_items: list, generated_by: str):
+    subject = "Reporte de Carencias de Inventario"
+    
+    rows_html = ""
+    for idx, item in enumerate(out_of_stock_items):
+        bg = "#fef2f2" if idx % 2 == 0 else "#fff5f5"
+        rows_html += f"""
+        <tr style="background:{bg};">
+          <td style="padding:10px 16px;border-bottom:1px solid #fee2e2;color:#b91c1c;font-size:14px;"><strong>{item['id']}</strong></td>
+          <td style="padding:10px 16px;border-bottom:1px solid #fee2e2;color:#b91c1c;font-size:14px;">{item['nombre']}</td>
+          <td style="padding:10px 16px;border-bottom:1px solid #fee2e2;color:#b91c1c;font-size:14px;font-weight:bold;">AGOTADO</td>
+        </tr>
+        """
+        
+    for idx, item in enumerate(low_stock_items):
+        bg = "#fffbeb" if idx % 2 == 0 else "#fff8ec"
+        rows_html += f"""
+        <tr style="background:{bg};">
+          <td style="padding:10px 16px;border-bottom:1px solid #fef3c7;color:#b45309;font-size:14px;"><strong>{item['id']}</strong></td>
+          <td style="padding:10px 16px;border-bottom:1px solid #fef3c7;color:#b45309;font-size:14px;">{item['nombre']}</td>
+          <td style="padding:10px 16px;border-bottom:1px solid #fef3c7;color:#b45309;font-size:14px;font-weight:bold;">{item['cantidad']} / min: {item.get('stock_minimo', 5)}</td>
+        </tr>
+        """
+        
+    if not low_stock_items and not out_of_stock_items:
+        rows_html = "<tr><td colspan='3' style='padding:20px;text-align:center;color:#64748b;'>No hay productos en estado crítico. Todo el stock es saludable.</td></tr>"
+
+    body = f"""
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="padding-bottom:16px;">
+          <p style="margin:0;color:#334155;font-size:15px;line-height:1.6;">
+            El asistente virtual (solicitado por <strong style="color:#f59e0b;">{generated_by}</strong>) ha generado el reporte de revisión de existencias actual.
+          </p>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding-bottom:20px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:12px;overflow:hidden;border:1px solid #e2e8f0;text-align:left;">
+            <tr>
+              <th style="background:#f1f5f9;padding:12px 16px;color:#475569;font-size:12px;text-transform:uppercase;">SKU</th>
+              <th style="background:#f1f5f9;padding:12px 16px;color:#475569;font-size:12px;text-transform:uppercase;">Producto</th>
+              <th style="background:#f1f5f9;padding:12px 16px;color:#475569;font-size:12px;text-transform:uppercase;">Stock Actual</th>
+            </tr>
+            {rows_html}
+          </table>
+        </td>
+      </tr>
+    </table>
+    """
+    html = _base_template("Reporte de Existencias Críticas", "#f59e0b", body)
+    send_email_alert(subject, html)
+

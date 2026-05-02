@@ -813,3 +813,34 @@ def update_settings(request: SettingsUpdate, current_user: dict = Depends(requir
     )
     log_movement(current_user, "AJUSTE", "Actualizó las configuraciones de categorías/unidades globales.")
     return {"status": "success", "message": "Configuración actualizada correctamente"}
+
+
+# ─────────────────────────────────────────────
+# AI Bot Endpoint
+# ─────────────────────────────────────────────
+class ChatMessage(BaseModel):
+    message: str
+
+@app.post("/api/bot/chat")
+def chat_with_bot(req: ChatMessage, current_user: dict = Depends(get_current_user)):
+    from bot_service import BotService
+    
+    # Check if this session already has a bot chat running
+    if "bot_session" not in current_user:
+        service = BotService(current_user)
+        current_user["bot_session"] = service.create_chat_session()
+        
+    chat = current_user["bot_session"]
+    
+    try:
+        response = chat.send_message(req.message)
+        return {"text": response.text}
+    except Exception as e:
+        return {"text": f"Error del asistente: {str(e)}"}
+
+@app.post("/api/bot/clear")
+def clear_bot_chat(current_user: dict = Depends(get_current_user)):
+    from bot_service import BotService
+    service = BotService(current_user)
+    current_user["bot_session"] = service.create_chat_session()
+    return {"message": "Chat history cleared"}
