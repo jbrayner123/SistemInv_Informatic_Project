@@ -289,30 +289,130 @@
   background: var(--success-hover);
 }
 
-/* Responsividad para Móviles */
-@media (max-width: 480px) {
+/* ═══════════════════════════════════════════════ */
+/* Responsividad para Móviles                      */
+/* ═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .smart-assistant-container {
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .sa-toggle-btn {
+    width: 52px;
+    height: 52px;
+  }
+
+  .sa-icon {
+    width: 24px;
+    height: 24px;
+  }
+
   .sa-chat-window {
+    width: calc(100vw - 32px);
+    max-width: 400px;
+    height: 60vh;
+    bottom: 74px;
+    right: 0;
+    border-radius: 14px;
+  }
+
+  .sa-chat-window.expanded {
+    width: 100vw;
+    height: calc(100vh - 20px);
+    max-width: 100vw;
+    border-radius: 14px 14px 0 0;
+    bottom: 0;
+    right: -16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .smart-assistant-container {
+    bottom: 12px;
+    right: 12px;
+  }
+
+  /* Chat ocupa toda la pantalla en móvil */
+  .sa-chat-window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     width: 100vw;
     height: 100vh;
     max-height: 100vh;
-    bottom: 0;
-    right: 0;
+    max-width: 100vw;
     border-radius: 0;
-    position: fixed;
-  }
-  
-  .sa-toggle-btn {
-    bottom: 16px;
-    right: 16px;
-    position: fixed;
+    transform-origin: bottom right;
   }
 
-  .sa-chat-window.active ~ .sa-toggle-btn {
-    top: 12px;
-    right: 16px;
-    bottom: auto;
+  .sa-chat-window.expanded {
+    width: 100vw;
+    height: 100vh;
+    max-width: 100vw;
+    border-radius: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  /* Header más compacto */
+  .sa-chat-header {
+    padding: 12px 14px;
+    border-radius: 0;
+  }
+
+  .sa-header-info h3 {
+    font-size: 0.9rem;
+  }
+
+  .bot-header-icon {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+  }
+
+  .sa-header-info {
+    gap: 8px;
+  }
+
+  /* Body ocupa todo el espacio disponible */
+  .sa-chat-body {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  /* Burbujas aprovechan más espacio horizontal */
+  .sa-message {
+    max-width: 90%;
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+
+  /* Footer / Input — evitar zoom en iOS */
+  .sa-chat-footer {
+    padding: 10px 12px;
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    gap: 6px;
+  }
+
+  .sa-chat-footer input {
+    font-size: 16px; /* >= 16px evita el zoom automático en iOS */
+    padding: 10px 14px;
+    border-radius: 18px;
+  }
+
+  .sa-chat-footer button {
     width: 40px;
     height: 40px;
-    z-index: 10001; /* Quedar encima del chat maximizado */
+    flex-shrink: 0;
+  }
+
+  /* Botón toggle se reposiciona */
+  .sa-toggle-btn {
+    width: 50px;
+    height: 50px;
+    margin-top: 12px;
   }
 }
