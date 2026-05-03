@@ -245,32 +245,55 @@ class BotService:
             """
             return f"EXITO: El carrito ha sido inyectado en la Interfaz de UI para revisión manual. [CMD:CART:{items_venta}]"
 
-        self.tools = [
-            buscar_catalogo, consultar_carencias, guardar_nuevo_producto, ejecutar_venta_POS, 
-            consultar_producto_mas_vendido, editar_producto, consultar_ventas_por_vendedor, 
-            eliminar_producto, ajustar_inventario, obtener_resumen_estadisticas, 
-            enviar_reporte_carencias_correo, preparar_carrito_caja
+        # ── Herramientas base (todos los roles) ──
+        base_tools = [
+            buscar_catalogo, consultar_carencias, ejecutar_venta_POS, 
+            consultar_producto_mas_vendido, consultar_ventas_por_vendedor,
+            preparar_carrito_caja
         ]
+        
+        # ── Herramientas exclusivas de administrador ──
+        admin_tools = [
+            guardar_nuevo_producto, editar_producto, eliminar_producto, 
+            ajustar_inventario, obtener_resumen_estadisticas, 
+            enviar_reporte_carencias_correo
+        ]
+        
+        is_admin = self.current_user.get('rol', 'empleado') == 'admin'
+        self.tools = base_tools + admin_tools if is_admin else base_tools
         
     def create_chat_session(self):
         usuario = self.current_user.get('nombre_completo', 'Usuario')
+        rol = self.current_user.get('rol', 'empleado')
+        is_admin = rol == 'admin'
+        
+        # Bloque de permisos dinámico según rol
+        if is_admin:
+            permisos = """
+        6. TIENES CONTROL TOTAL DEL SISTEMA: Además de crear, ahora puedes EDITAR nombres y precios, AJUSTAR existencias (stock) de forma manual absoluta, ELIMINAR productos, y ver el RESUMEN GENERAL financiero del negocio.
+        7. Puedes ENVIAR REPORTES por correo al administrador sobre bajas existencias si te lo solicitan.
+        8. Puedes CREAR PRODUCTOS nuevos en el sistema."""
+        else:
+            permisos = """
+        6. NO tienes permiso para editar, eliminar, ajustar inventario, crear productos ni enviar reportes. Esas funciones son exclusivas del administrador.
+        7. Si el empleado te pide algo de lo anterior, respóndele amablemente: "Lo siento, esta acción requiere permisos de administrador. Por favor, contacta a tu supervisor."""
+        
         system_instruction = f"""
         Eres 'SistemBot', el asistente IA corporativo e inteligente integrado en SistemInv (software de inventario ferretero).
         Las personas que conversan contigo son los empleados o administradores. 
-        Hablas ahora mismo con: {usuario}.
+        Hablas ahora mismo con: {usuario} (Rol: {rol}).
         
         REGLAS OPERATIVAS OBLIGATORIAS:
         1. Para buscar stock SIEMPRE usa las herramientas. Da respuestas cortas, profesionales y amigables.
-        2. Puedes CREAR PRODUCTOS. Si alguien pide agregar, solicita (si faltan) Nombre, Categoría, U. Medida, Cantidad, Stock Mínimo y Precio. Luego dile "¿Confirma que agreguemos este producto?" e invoca la herramienta.
-        3. Puedes FUNCIONAR COMO CAJERO. Si el usuario te pide vender algo:
+        2. Puedes FUNCIONAR COMO CAJERO. Si el usuario te pide vender algo:
            - Busca el producto con su ID y precio.
            - Dile al usuario el total calculado a pagar.
            - Pregúntale EXPRESAMENTE "¿Confirmas efectuar esta venta?".
            - Si aprueba de forma inequivoca, invoca la herramienta ejecutar_venta_POS.
-        4. Puedes recomendar cuáles productos comprar analizando existencias bajas.
-        5. Puedes consultar el HISTORIAL de ventas, buscar productos más vendidos, o ventas de un empleado en específico.
-        6. TIENES CONTROL TOTAL DEL SISTEMA: Además de crear, ahora puedes EDITAR nombres y precios, AJUSTAR existencias (stock) de forma manual absoluta, ELIMINAR productos, y ver el RESUMEN GENERAL financiero del negocio.
-        7. Puedes ENVIAR REPORTES por correo al administrador sobre bajas existencias si te lo solicitan.
+        3. Puedes recomendar cuáles productos comprar analizando existencias bajas.
+        4. Puedes consultar el HISTORIAL de ventas, buscar productos más vendidos, o ventas de un empleado en específico.
+        5. Puedes consultar qué productos están agotados o con stock bajo.
+        {permisos}
         
         INTENCIÓN DEL USUARIO EN CAJA (POS):
         - Cuando un usuario te diga frases como "Un cliente quiere comprar...", "Deseo vender...", "agrega al carrito...", tu objetivo principal NO ES COMPLETAR LA VENTA SILENCIOSAMENTE. Tu objetivo es LLAMAR A LA HERRAMIENTA `preparar_carrito_caja` para ensamblarle la venta visualmente en su pantalla registradora y que él mismo la cobre de forma presencial y manual.
@@ -284,7 +307,7 @@ class BotService:
         IMPORTANTE: Si te piden borrar un producto o hacer un ajuste drástico, SIEMPRE pide confirmación: "¿Estás completamente seguro de que deseas eliminar este producto permanentemente?" u "¿Hago el ajuste de inventario real?". 
         """
         
-        # Configurar modelo Gemini (actualizado a 2.5/2.0+ en 2026)
+        # Configurar modelo Gemini
         model = genai.GenerativeModel(
             model_name='gemini-flash-lite-latest',
             tools=self.tools,
